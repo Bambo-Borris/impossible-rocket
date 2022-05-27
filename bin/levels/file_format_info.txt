@@ -1,0 +1,4 @@
+# s = start place
+# p = planet | o = objective
+# p <radius> <position.x> <position.y> <mass> 
+# o <position.x> <position.y> 

@@ -1,0 +1,5 @@
+x64/
+*.dll
+build/
+*.zip
+.vscode/

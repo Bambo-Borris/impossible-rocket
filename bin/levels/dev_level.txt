@@ -1,0 +1,8 @@
+# s = start place | f = final place
+# p = planet | o = objective
+# p <radius> <position.x> <position.y> <mass> 
+# o <position.x> <position.y> 
+s 30.0 290.0
+p 64.0 400.0 300.0 2.5e16
+o 202 300
+o 600 304
