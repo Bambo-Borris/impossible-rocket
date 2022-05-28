@@ -1,7 +1,9 @@
 #include "InputHandler.hpp"
 
 #include <SFML/Window/Joystick.hpp>
+#include <SFML/Window/Event.hpp>
 #include <cassert>
+#include <imgui-sfml/imgui-SFML.h>
 
 constexpr auto AXIS_DEADZONE_LOWER = 5.0f;
 constexpr auto AXIS_DEADZONE_UPPER = 95.0f;
@@ -27,21 +29,38 @@ InputHandler &InputHandler::get()
 	return handler;
 }
 
-void InputHandler::handleEvents(const sf::Event &event)
+void InputHandler::handleEvents(sf::RenderWindow &window)
 {
-	handleKeyboard(event);
-	switch (m_padType)
+	m_resetPressed = false;
+	m_debugSkipPressed = false;
+	sf::Event event;
+	while (window.pollEvent(event))
 	{
-	case PadType::Xbox_Pad:
-		handleXbox(event);
-		break;
+		ImGui::SFML::ProcessEvent(window, event);
+		if (event.type == sf::Event::Closed)
+		{
+			window.close();
+		}
 
-	case PadType::DS4_Pad:
-		handleDS4(event);
-		break;
-	default:
-		assert(false);
-		break;
+		if (event.type == sf::Event::KeyPressed)
+		{
+			if (event.key.code == sf::Keyboard::Key::Escape)
+				window.close();
+		}
+		handleKeyboard(event);
+		switch (m_padType)
+		{
+		case PadType::Xbox_Pad:
+			handleXbox(event);
+			break;
+
+		case PadType::DS4_Pad:
+			handleDS4(event);
+			break;
+		default:
+			assert(false);
+			break;
+		}
 	}
 }
 
@@ -212,14 +231,4 @@ void InputHandler::handleDS4(const sf::Event &event)
 				m_state.linear_thrust = 0.0f;
 		}
 	}
-}
-
-void InputHandler::resetConsumed()
-{
-	m_resetPressed = false;
-}
-
-void InputHandler::debugSkipConsumed()
-{
-	m_debugSkipPressed = false;
 }

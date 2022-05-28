@@ -62,7 +62,6 @@ void PlayState::update(const sf::Time &dt)
 	{
 		m_gameLevel.resetLevel();
 		m_rocket.levelStart();
-		input.resetConsumed();
 	}
 
 	if (!m_rocket.isInBounds(m_window) && !m_isOutOfBounds)
@@ -143,7 +142,6 @@ void PlayState::update(const sf::Time &dt)
 		{
 			m_gameLevel.loadLevel(static_cast<GameLevel::Levels>(current + 1));
 			m_rocket.levelStart();
-			input.debugSkipConsumed();
 		}
 	}
 

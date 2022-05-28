@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 class InputHandler
 {
@@ -18,15 +18,12 @@ public:
 	};
 
 	static InputHandler &get();
-	void handleEvents(const sf::Event &event);
+	void handleEvents(sf::RenderWindow& window);
 
 	auto getInputState() const -> InputState;
 	auto wasResetPressed() const -> bool;
 	auto getPadType() const -> PadType;
 	auto debugSkipPressed() const -> bool;
-
-	void resetConsumed();
-	void debugSkipConsumed();
 
 private:
 	InputHandler() = default;

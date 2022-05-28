@@ -86,7 +86,7 @@ void ParticleEffect::update(const sf::Time &dt)
 	{
 	case Type::Planet_Collision:
 	{
-		const float t = std::min(m_aliveTime.asSeconds() / m_duration.asSeconds(), 1.0f);
+		const auto t = std::min(m_aliveTime.asSeconds() / m_duration.asSeconds(), 1.0f);
 		const auto newColour = lerp_colour(PLANET_COLLISION_PARTICLE_COLOUR_START, PLANET_COLLISION_PARTICLE_COLOUR_END, t);
 		for (std::size_t i = 0; i < PLANET_COLLISION_PARTICLE_COUNT; ++i)
 		{
