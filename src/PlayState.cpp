@@ -44,8 +44,8 @@ PlayState::PlayState(sf::RenderWindow &window)
 void PlayState::update(const sf::Time &dt)
 {
 	// TODO: Reimplement skip through input handler
-	bool skipLevel = false;
 	auto &input = InputHandler::get();
+	const bool skipLevel = input.debugSkipPressed();
 	static auto padType = input.getPadType();
 	static sf::Uint32 attempts = m_gameLevel.getAttemptTotal();
 
@@ -142,7 +142,7 @@ void PlayState::update(const sf::Time &dt)
 		{
 			m_gameLevel.loadLevel(static_cast<GameLevel::Levels>(current + 1));
 			m_rocket.levelStart();
-			skipLevel = false;
+			input.debugSkipConsumed();
 		}
 	}
 
@@ -173,11 +173,16 @@ void PlayState::update(const sf::Time &dt)
 	}
 }
 
-void PlayState::draw()
+void PlayState::draw() const
 {
 	m_window.draw(m_backgroundSprite);
 	m_window.draw(m_gameLevel);
 	m_window.draw(m_rocket);
+	for (const auto &pe : m_particleEffects)
+	{
+		m_window.draw(*pe);
+	}
+
 	m_window.draw(m_uiPadType);
 	m_window.draw(m_uiAttempts);
 	if (m_isOutOfBounds)

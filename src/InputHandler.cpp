@@ -60,6 +60,11 @@ auto InputHandler::getPadType() const -> PadType
 	return m_padType;
 }
 
+auto InputHandler::debugSkipPressed() const -> bool
+{
+	return m_debugSkipPressed;
+}
+
 void InputHandler::handleKeyboard(const sf::Event &event)
 {
 	if (event.type == sf::Event::KeyPressed)
@@ -81,6 +86,9 @@ void InputHandler::handleKeyboard(const sf::Event &event)
 	{
 		if (event.key.code == sf::Keyboard::Key::R)
 			m_resetPressed = true;
+
+		if (event.key.code == sf::Keyboard::N)
+			m_debugSkipPressed = true;
 
 		if (event.key.code == sf::Keyboard::F3)
 		{
@@ -209,4 +217,9 @@ void InputHandler::handleDS4(const sf::Event &event)
 void InputHandler::resetConsumed()
 {
 	m_resetPressed = false;
+}
+
+void InputHandler::debugSkipConsumed()
+{
+	m_debugSkipPressed = false;
 }

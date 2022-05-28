@@ -51,10 +51,12 @@ void PlayerRocket::update(const sf::Time &dt)
 		m_body->torque += TORQUE_MAG * state.angular_thrust;
 	}
 
-	if (m_gameLevel.doesCollideWithPlanet(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f))
+	auto result = m_gameLevel.doesCollideWithPlanet(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
+	if (result)
 	{
 		m_collidedWithPlanet = true;
 		m_body->isActive = false;
+		m_collisionNormal = result.value();
 	}
 
 	m_gameLevel.handleObjectiveIntersections(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);

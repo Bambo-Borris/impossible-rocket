@@ -3,6 +3,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Time.hpp>
+#include <random>
 
 class ParticleEffect : public sf::Drawable
 {
@@ -27,10 +28,13 @@ private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_normal;
 	sf::VertexArray m_vertices;
-	std::vector<sf::Vector2f> m_positions;
+	std::vector<sf::Vector2f> m_velocities;
 	std::size_t m_emittedIndex{0};
 
 	sf::Time m_duration;
 	sf::Time m_aliveTime;
+
+	static std::random_device m_randomDevice;
+	std::default_random_engine m_randomEngine;
 	bool m_isPlaying{true};
 };

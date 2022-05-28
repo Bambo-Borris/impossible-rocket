@@ -16,7 +16,7 @@ public:
 	~PlayState() = default;
 
 	virtual void update(const sf::Time &dt) override;
-	virtual void draw() override;
+	virtual void draw() const override;
 
 private:
 	PhysicsWorld m_physicsWorld;
