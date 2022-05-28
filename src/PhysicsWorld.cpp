@@ -30,7 +30,7 @@ void PhysicsWorld::integrate(const sf::Time &timeStep)
 	for (auto &body : m_bodies)
 	{
 		// Immovable!
-		if (body->mass == 0.0f)
+		if (body->mass == 0.0f || !body->isActive)
 		{
 			continue;
 		}

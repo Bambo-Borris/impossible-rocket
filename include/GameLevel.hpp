@@ -6,6 +6,7 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
+#include <optional>
 
 class GameLevel
 	: public sf::Drawable
@@ -31,7 +32,7 @@ public:
 
 	sf::Vector2f getSummedForce(const sf::Vector2f &pos, float mass) const;
 
-	bool doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const;
+	std::optional<sf::Vector2f> doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const;
 
 	void handleObjectiveIntersections(const sf::Vector2f &pos, float radius);
 

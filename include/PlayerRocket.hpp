@@ -16,6 +16,9 @@ public:
 	void levelStart();
 
 	auto isInBounds(const sf::RenderWindow &window) const -> bool;
+	auto didHitPlanet() const -> bool;
+	auto getCollisionNormal() const -> sf::Vector2f;
+	auto getPosition() const -> sf::Vector2f;
 
 protected:
 	virtual void draw(sf::RenderTarget &target, const sf::RenderStates &states) const override;
@@ -27,6 +30,7 @@ private:
 	sf::RectangleShape m_shape;
 	GameLevel &m_gameLevel;
 
+	sf::Vector2f m_collisionNormal;
 	sf::Texture m_texture;
 	sf::SoundBuffer m_sbResetLevel;
 	sf::Sound m_resetLevelSfx;
@@ -35,4 +39,6 @@ private:
 
 	std::size_t m_particleIndex{0};
 	sf::Uint32 m_emitCounter{0};
+	
+	bool m_collidedWithPlanet{false};
 };

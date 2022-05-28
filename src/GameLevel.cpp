@@ -11,7 +11,7 @@ constexpr auto BIG_G{6.67e-11f};
 constexpr auto OBJECTIVE_ROTATION_SPEED{50.0f};
 const sf::Vector2f OBJECTIVE_SIZE{24.0f, 24.0f};
 
-bool circle_vs_circle(const sf::Vector2f& position_a, float radius_a, const sf::Vector2f& position_b, float radius_b)
+bool circle_vs_circle(const sf::Vector2f &position_a, float radius_a, const sf::Vector2f &position_b, float radius_b)
 {
 	const float radii_sum_sq = std::pow((radius_a + radius_b), 2.0f);
 	sf::Vector2f difference = position_a - position_b;
@@ -138,14 +138,14 @@ sf::Vector2f GameLevel::getSummedForce(const sf::Vector2f &pos, float mass) cons
 	return sum;
 }
 
-bool GameLevel::doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const
+std::optional<sf::Vector2f> GameLevel::doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const
 {
 	for (auto &p : m_planets)
 	{
 		if (circle_vs_circle(pos, radius, p.shape.getPosition(), p.shape.getRadius()))
-			return true;
+			return {(pos - p.shape.getPosition()).normalized()};
 	}
-	return false;
+	return {};
 }
 
 void GameLevel::handleObjectiveIntersections(const sf::Vector2f &pos, float radius)
@@ -154,7 +154,7 @@ void GameLevel::handleObjectiveIntersections(const sf::Vector2f &pos, float radi
 	{
 		if (!o.isActive)
 			continue;
-		
+
 		const auto result = circle_vs_circle(pos, radius, o.shape.getPosition(), OBJECTIVE_SIZE.x / 2.0f);
 		if (result)
 		{
@@ -194,7 +194,7 @@ auto GameLevel::getAttemptTotal() const -> sf::Uint32
 	return m_levelAttempts;
 }
 
-void GameLevel::draw(sf::RenderTarget &target, const sf::RenderStates& states) const
+void GameLevel::draw(sf::RenderTarget &target, const sf::RenderStates &states) const
 {
 	for (const auto &p : m_planets)
 	{

@@ -4,12 +4,15 @@
 #include "PlayerRocket.hpp"
 #include "GameLevel.hpp"
 #include "BaseState.hpp"
+#include "ParticleEffect.hpp"
+
+#include <memory>
 
 class PlayState
 	: public BaseState
 {
 public:
-	PlayState(sf::RenderWindow& window);
+	PlayState(sf::RenderWindow &window);
 	~PlayState() = default;
 
 	virtual void update(const sf::Time &dt) override;
@@ -19,6 +22,7 @@ private:
 	PhysicsWorld m_physicsWorld;
 	GameLevel m_gameLevel;
 	PlayerRocket m_rocket;
+
 	sf::Texture m_backgroundTexture;
 	sf::RectangleShape m_backgroundSprite;
 	sf::Font m_mainFont;
@@ -26,5 +30,7 @@ private:
 	sf::Text m_uiAttempts;
 	sf::Text m_uiOOB;
 	sf::Clock m_oobTimer; // out of bounds timer
+
+	std::vector<std::unique_ptr<ParticleEffect>> m_particleEffects;
 	bool m_isOutOfBounds{false};
 };

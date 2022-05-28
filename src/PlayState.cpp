@@ -53,6 +53,10 @@ void PlayState::update(const sf::Time &dt)
 	m_physicsWorld.step(FIXED_TIME_STEP, dt);
 	m_gameLevel.update(dt);
 	m_rocket.update(dt);
+	for (auto &e : m_particleEffects)
+	{
+		e->update(dt);
+	}
 
 	if (input.wasResetPressed())
 	{
@@ -91,6 +95,37 @@ void PlayState::update(const sf::Time &dt)
 			m_gameLevel.resetLevel();
 			m_rocket.levelStart();
 			m_isOutOfBounds = false;
+		}
+	}
+
+	// If the player collides with a planet then
+	// we should play a particle effect & then
+	// once the effect is complete, we'll reset
+	if (m_rocket.didHitPlanet())
+	{
+		auto result = std::find_if(m_particleEffects.begin(), m_particleEffects.end(), [](const auto &effect) -> bool
+								   { return effect->getEffectType() == ParticleEffect::Type::Planet_Collision; });
+		// If we don't find an effect for the collision
+		// then we'll add it
+		if (result == m_particleEffects.end())
+		{
+			// Add particle effect
+			m_particleEffects.push_back(std::make_unique<ParticleEffect>(
+				ParticleEffect::Type::Planet_Collision,
+				m_rocket.getPosition(),
+				m_rocket.getCollisionNormal()));
+		}
+		else
+		{
+			if (!(*result)->isPlaying())
+			{
+				m_rocket.levelStart();
+				m_gameLevel.resetLevel();
+				m_particleEffects.erase(
+					std::remove(m_particleEffects.begin(),
+								m_particleEffects.end(),
+								(*result)));
+			}
 		}
 	}
 

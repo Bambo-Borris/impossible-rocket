@@ -17,6 +17,7 @@ struct PhysicsBody
 
 	sf::Vector2f force;
 	sf::Vector2f linearVelocity;
+	bool isActive{ true };
 };
 
 class PhysicsWorld
