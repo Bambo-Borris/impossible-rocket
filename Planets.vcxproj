@@ -26,16 +26,20 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\PhysicsWorld.cpp" />
     <ClCompile Include="src\PlayerRocket.cpp" />
+    <ClCompile Include="src\BaseState.cpp" />
+    <ClCompile Include="src\PlayState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\imgui-sfml\imconfig-SFML.h" />
     <ClInclude Include="external\imgui-sfml\imgui-SFML.h" />
     <ClInclude Include="external\imgui-sfml\imgui-SFML_export.h" />
     <ClInclude Include="include\App.hpp" />
-    <ClInclude Include="include\InputHandler.h" />
+    <ClInclude Include="include\InputHandler.hpp" />
     <ClInclude Include="include\GameLevel.hpp" />
     <ClInclude Include="include\PhysicsWorld.hpp" />
     <ClInclude Include="include\PlayerRocket.hpp" />
+    <ClInclude Include="include\BaseState.hpp" />
+    <ClInclude Include="include\PlayState.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

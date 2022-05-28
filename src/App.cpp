@@ -1,5 +1,6 @@
 #include "App.hpp"
-#include "InputHandler.h"
+#include "InputHandler.hpp"
+#include "PlayState.hpp"
 
 #include <string>
 #include <spdlog/spdlog.h>
@@ -8,12 +9,9 @@
 #include <imgui.h>
 
 constexpr auto WINDOW_TITLE{"Impossible Rocket - [indev]"};
-const sf::Time FIXED_TIME_STEP = sf::seconds(1.0f / 120.0f);
-constexpr auto MAX_OOB_TIME = 5;
 
 App::App()
-	: m_window(sf::VideoMode({800, 600}), WINDOW_TITLE, sf::Style::Default ^ sf::Style::Resize),
-	  m_rocket(m_physicsWorld, m_gameLevel)
+	: m_window(sf::VideoMode({800, 600}), WINDOW_TITLE, sf::Style::Default ^ sf::Style::Resize)
 {
 	spdlog::set_level(spdlog::level::debug);
 
@@ -21,30 +19,7 @@ App::App()
 	m_window.setKeyRepeatEnabled(false);
 	InputHandler::get(); // construct handler
 
-	m_gameLevel.loadLevel(GameLevel::Levels::One);
-	m_rocket.levelStart();
-
-	if (!m_backgroundTexture.loadFromFile("bin/textures/background_resized.png"))
-		throw std::runtime_error("Unable to load background texture");
-
-	m_backgroundTexture.setRepeated(true);
-
-	m_backgroundSprite.setSize({m_window.getSize()});
-	m_backgroundSprite.setTexture(&m_backgroundTexture);
-	m_backgroundSprite.setTextureRect({{0, 0}, {600, 400}});
-
-	if (!m_mainFont.loadFromFile("bin/fonts/VCR_OSD_MONO_1.001.ttf"))
-		throw std::runtime_error("Unable to load default font");
-
-	m_uiPadType.setFont(m_mainFont);
-	m_uiPadType.setString("Xbox");
-	const auto bounds = m_uiPadType.getGlobalBounds();
-	m_uiPadType.setPosition({800.0f - bounds.width, 0.0f});
-
-	m_uiAttempts.setFont(m_mainFont);
-	m_uiAttempts.setString("Attempts: 1");
-
-	m_uiOOB.setFont(m_mainFont);
+	m_states.push(std::make_unique<PlayState>(m_window));
 
 	ImGui::SFML::Init(m_window);
 }
@@ -52,6 +27,11 @@ App::App()
 App::~App()
 {
 	ImGui::SFML::Shutdown(m_window);
+
+	while (!m_states.empty())
+	{
+		m_states.pop();
+	}
 }
 
 void App::run()
@@ -81,21 +61,18 @@ void App::run()
 			{
 				if (event.key.code == sf::Keyboard::Key::Escape)
 					m_window.close();
-
-#ifdef _DEBUG
-				if (event.key.code == sf::Keyboard::N)
-				{
-					skipLevel = true;
-				}
-#endif
 			}
 			ImGui::SFML::ProcessEvent(m_window, event);
 			InputHandler::get().handleEvents(event);
 		}
 
-		updateGame(deltaTime, skipLevel);
+		ImGui::SFML::Update(m_window, deltaTime);
+		m_states.top()->update(deltaTime);
 
-		drawGame();
+		m_window.clear();
+		m_states.top()->draw();
+		ImGui::SFML::Render(m_window);
+		m_window.display();
 	}
 }
 
@@ -117,116 +94,4 @@ void App::logFPS(const sf::Time &dt)
 		sum = sf::Time::Zero;
 		counter = 0;
 	}
-}
-
-void App::updateGame(const sf::Time &dt, bool skipLevel)
-{
-	auto &input = InputHandler::get();
-	static auto padType = input.getPadType();
-	static sf::Uint32 attempts = m_gameLevel.getAttemptTotal();
-
-	// Update core gameplay & ImGui
-	ImGui::SFML::Update(m_window, dt);
-	m_physicsWorld.step(FIXED_TIME_STEP, dt);
-	m_gameLevel.update(dt);
-	m_rocket.update(dt);
-
-	if (input.wasResetPressed())
-	{
-		m_gameLevel.resetLevel();
-		m_rocket.levelStart();
-		input.resetConsumed();
-	}
-
-	if (!m_rocket.isInBounds(m_window) && !m_isOutOfBounds)
-	{
-		m_oobTimer.restart();
-		m_isOutOfBounds = true;
-	}
-	else if (m_rocket.isInBounds(m_window) && m_isOutOfBounds)
-	{
-		m_isOutOfBounds = false;
-	}
-
-	if (m_isOutOfBounds)
-	{
-		const auto seconds = static_cast<sf::Int32>(m_oobTimer.getElapsedTime().asSeconds());
-		auto remaining = std::max(MAX_OOB_TIME - seconds, 0);
-		m_uiOOB.setString(fmt::format("Out of bounds!\nReset in.. {}", remaining));
-
-		// I hate centring text in sfml because it produces this horrible mess
-		// but honestly there's so little text in this game it's not worth
-		// creating a utility function just to do this one off bs
-		const sf::Vector2f localOffset{m_uiOOB.getLocalBounds().left, m_uiOOB.getLocalBounds().top};
-		const sf::Vector2f globalOrigin = {m_uiOOB.getGlobalBounds().width / 2.0f, m_uiOOB.getGlobalBounds().height};
-		m_uiOOB.setOrigin(localOffset + globalOrigin);
-		const auto windowSize = sf::Vector2f{m_window.getSize()};
-		m_uiOOB.setPosition(windowSize * 0.5f);
-
-		if (remaining == 0)
-		{
-			m_gameLevel.resetLevel();
-			m_rocket.levelStart();
-			m_isOutOfBounds = false;
-		}
-	}
-
-	// Roll over to next level
-	if (m_gameLevel.isLevelComplete() || skipLevel)
-	{
-		const auto current = static_cast<sf::Uint32>(m_gameLevel.getCurrentLevel());
-		if (current + 1 >= static_cast<sf::Uint32>(GameLevel::Levels::MAX_LEVEL))
-		{
-			// Do game completion here.
-			spdlog::debug("All Levels Complete");
-		}
-		else
-		{
-			m_gameLevel.loadLevel(static_cast<GameLevel::Levels>(current + 1));
-			m_rocket.levelStart();
-			skipLevel = false;
-		}
-	}
-
-	// Update pad type UI
-	if (input.getPadType() != padType)
-	{
-		padType = input.getPadType();
-		switch (padType)
-		{
-		case InputHandler::PadType::Xbox_Pad:
-			m_uiPadType.setString("Xbox");
-			break;
-
-		case InputHandler::PadType::DS4_Pad:
-			m_uiPadType.setString("DS4");
-			break;
-		default:
-			break;
-		}
-		const auto bounds = m_uiPadType.getGlobalBounds();
-		m_uiPadType.setPosition({800 - bounds.width, 0.0f});
-	}
-
-	if (attempts != m_gameLevel.getAttemptTotal())
-	{
-		attempts = m_gameLevel.getAttemptTotal();
-		m_uiAttempts.setString(fmt::format("Attempts: {}", attempts));
-	}
-}
-
-void App::drawGame()
-{
-	m_window.clear();
-	m_window.draw(m_backgroundSprite);
-	m_window.draw(m_gameLevel);
-	m_window.draw(m_rocket);
-	m_window.draw(m_uiPadType);
-	m_window.draw(m_uiAttempts);
-	if (m_isOutOfBounds)
-	{
-		m_window.draw(m_uiOOB);
-	}
-	ImGui::SFML::Render(m_window);
-	m_window.display();
 }

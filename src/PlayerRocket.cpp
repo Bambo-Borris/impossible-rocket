@@ -1,5 +1,5 @@
 #include "PlayerRocket.hpp"
-#include "InputHandler.h"
+#include "InputHandler.hpp"
 #include "GameLevel.hpp"
 
 #include <array>
