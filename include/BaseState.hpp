@@ -10,7 +10,7 @@ public:
 	virtual ~BaseState() = default;
 
 	virtual void update(const sf::Time &dt) = 0;
-	virtual void draw() = 0;
+	virtual void draw() const = 0;
 
 protected:
 	sf::RenderWindow &m_window;

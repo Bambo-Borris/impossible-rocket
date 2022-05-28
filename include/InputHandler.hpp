@@ -23,8 +23,10 @@ public:
 	auto getInputState() const -> InputState;
 	auto wasResetPressed() const -> bool;
 	auto getPadType() const -> PadType;
+	auto debugSkipPressed() const -> bool;
 
 	void resetConsumed();
+	void debugSkipConsumed();
 
 private:
 	InputHandler() = default;
@@ -36,4 +38,5 @@ private:
 	PadType m_padType{PadType::Xbox_Pad};
 	InputState m_state{};
 	bool m_resetPressed{false};
+	bool m_debugSkipPressed{false};
 };

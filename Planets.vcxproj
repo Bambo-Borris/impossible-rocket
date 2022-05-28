@@ -24,6 +24,7 @@
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\GameLevel.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\ParticleEffect.cpp" />
     <ClCompile Include="src\PhysicsWorld.cpp" />
     <ClCompile Include="src\PlayerRocket.cpp" />
     <ClCompile Include="src\BaseState.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="include\App.hpp" />
     <ClInclude Include="include\InputHandler.hpp" />
     <ClInclude Include="include\GameLevel.hpp" />
+    <ClInclude Include="include\ParticleEffect.hpp" />
     <ClInclude Include="include\PhysicsWorld.hpp" />
     <ClInclude Include="include\PlayerRocket.hpp" />
     <ClInclude Include="include\BaseState.hpp" />

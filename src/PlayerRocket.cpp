@@ -1,6 +1,5 @@
 #include "PlayerRocket.hpp"
 #include "InputHandler.hpp"
-#include "GameLevel.hpp"
 
 #include <array>
 #include <cassert>
@@ -51,10 +50,11 @@ void PlayerRocket::update(const sf::Time &dt)
 		m_body->torque += TORQUE_MAG * state.angular_thrust;
 	}
 
-	if (m_gameLevel.doesCollideWithPlanet(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f))
+	auto result = m_gameLevel.doesCollideWithPlanet(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
+	if (result)
 	{
-		levelStart();
-		m_gameLevel.resetLevel();
+		m_body->isActive = false;
+		m_collisionInfo = result;
 	}
 
 	m_gameLevel.handleObjectiveIntersections(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
@@ -71,6 +71,8 @@ void PlayerRocket::update(const sf::Time &dt)
 
 void PlayerRocket::levelStart()
 {
+	m_collisionInfo.reset();
+	
 	// Shape & physics reset
 	m_shape.setPosition(m_gameLevel.getPlayerStart());
 	m_shape.setRotation(sf::degrees(0.0f));
@@ -79,6 +81,7 @@ void PlayerRocket::levelStart()
 	m_body->linearVelocity = {};
 	m_body->force = {};
 	m_body->torque = 0.0f;
+	m_body->isActive = true;
 
 	// Trail reset
 	m_trailVertices.clear();
@@ -120,6 +123,16 @@ auto PlayerRocket::isInBounds(const sf::RenderWindow &window) const -> bool
 	const auto &view = window.getView();
 	const sf::FloatRect bounds{{0.0f, 0.0f}, view.getSize()};
 	return bounds.findIntersection(m_shape.getGlobalBounds()).has_value();
+}
+
+auto PlayerRocket::getCollisionInfo() const -> std::optional<GameLevel::PlanetCollisionInfo>
+{
+	return m_collisionInfo;
+}
+
+auto PlayerRocket::getPosition() const -> sf::Vector2f
+{
+	return m_shape.getPosition();
 }
 
 void PlayerRocket::draw(sf::RenderTarget &target, const sf::RenderStates &states) const
