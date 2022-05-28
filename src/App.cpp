@@ -40,7 +40,6 @@ void App::run()
 
 	while (m_window.isOpen())
 	{
-		bool skipLevel = false;
 		auto deltaTime = loopClock.restart();
 		if (deltaTime > sf::seconds(0.25f))
 		{
@@ -49,23 +48,7 @@ void App::run()
 
 		logFPS(deltaTime);
 
-		sf::Event event;
-		while (m_window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-			{
-				m_window.close();
-			}
-
-			if (event.type == sf::Event::KeyPressed)
-			{
-				if (event.key.code == sf::Keyboard::Key::Escape)
-					m_window.close();
-			}
-			ImGui::SFML::ProcessEvent(m_window, event);
-			InputHandler::get().handleEvents(event);
-		}
-
+		InputHandler::get().handleEvents(m_window);
 		ImGui::SFML::Update(m_window, deltaTime);
 		m_states.top()->update(deltaTime);
 
