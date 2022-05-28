@@ -1,4 +1,4 @@
-#include "InputHandler.h"
+#include "InputHandler.hpp"
 
 #include <SFML/Window/Joystick.hpp>
 #include <cassert>
