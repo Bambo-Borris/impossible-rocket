@@ -12,6 +12,12 @@ class GameLevel
 	: public sf::Drawable
 {
 public:
+	struct PlanetCollisionInfo 
+	{
+		sf::Vector2f normal;
+		sf::Vector2f point;
+	};
+
 	enum class Levels
 	{
 		Developer = 0,
@@ -32,7 +38,7 @@ public:
 
 	sf::Vector2f getSummedForce(const sf::Vector2f &pos, float mass) const;
 
-	std::optional<sf::Vector2f> doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const;
+	std::optional<PlanetCollisionInfo> doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const;
 
 	void handleObjectiveIntersections(const sf::Vector2f &pos, float radius);
 

@@ -1,6 +1,5 @@
 #include "PlayerRocket.hpp"
 #include "InputHandler.hpp"
-#include "GameLevel.hpp"
 
 #include <array>
 #include <cassert>
@@ -54,9 +53,8 @@ void PlayerRocket::update(const sf::Time &dt)
 	auto result = m_gameLevel.doesCollideWithPlanet(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
 	if (result)
 	{
-		m_collidedWithPlanet = true;
 		m_body->isActive = false;
-		m_collisionNormal = result.value();
+		m_collisionInfo = result;
 	}
 
 	m_gameLevel.handleObjectiveIntersections(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
@@ -73,9 +71,8 @@ void PlayerRocket::update(const sf::Time &dt)
 
 void PlayerRocket::levelStart()
 {
-	// Flags reset
-	m_collidedWithPlanet = false;
-
+	m_collisionInfo.reset();
+	
 	// Shape & physics reset
 	m_shape.setPosition(m_gameLevel.getPlayerStart());
 	m_shape.setRotation(sf::degrees(0.0f));
@@ -128,14 +125,9 @@ auto PlayerRocket::isInBounds(const sf::RenderWindow &window) const -> bool
 	return bounds.findIntersection(m_shape.getGlobalBounds()).has_value();
 }
 
-auto PlayerRocket::didHitPlanet() const -> bool
+auto PlayerRocket::getCollisionInfo() const -> std::optional<GameLevel::PlanetCollisionInfo>
 {
-	return m_collidedWithPlanet;
-}
-
-auto PlayerRocket::getCollisionNormal() const -> sf::Vector2f
-{
-	return m_collisionNormal;
+	return m_collisionInfo;
 }
 
 auto PlayerRocket::getPosition() const -> sf::Vector2f

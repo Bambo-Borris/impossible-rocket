@@ -11,13 +11,18 @@ constexpr auto BIG_G{6.67e-11f};
 constexpr auto OBJECTIVE_ROTATION_SPEED{50.0f};
 const sf::Vector2f OBJECTIVE_SIZE{24.0f, 24.0f};
 
-bool circle_vs_circle(const sf::Vector2f &position_a, float radius_a, const sf::Vector2f &position_b, float radius_b)
+std::optional<GameLevel::PlanetCollisionInfo> circle_vs_circle(const sf::Vector2f &position_a, float radius_a, const sf::Vector2f &position_b, float radius_b)
 {
 	const float radii_sum_sq = std::pow((radius_a + radius_b), 2.0f);
 	sf::Vector2f difference = position_a - position_b;
 	const float length_squared = difference.lengthSq();
 
-	return length_squared < radii_sum_sq;
+	if (length_squared > radii_sum_sq)
+		return {};
+
+	const auto normal = (position_a - position_b).normalized();
+	const auto point = position_b + (radius_b * normal);
+	return {{normal, point}};
 }
 
 GameLevel::GameLevel()
@@ -138,12 +143,13 @@ sf::Vector2f GameLevel::getSummedForce(const sf::Vector2f &pos, float mass) cons
 	return sum;
 }
 
-std::optional<sf::Vector2f> GameLevel::doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const
+std::optional<GameLevel::PlanetCollisionInfo> GameLevel::doesCollideWithPlanet(const sf::Vector2f &pos, float radius) const
 {
 	for (auto &p : m_planets)
 	{
-		if (circle_vs_circle(pos, radius, p.shape.getPosition(), p.shape.getRadius()))
-			return {(pos - p.shape.getPosition()).normalized()};
+		const auto result = circle_vs_circle(pos, radius, p.shape.getPosition(), p.shape.getRadius());
+		if (result)
+			return result;
 	}
 	return {};
 }

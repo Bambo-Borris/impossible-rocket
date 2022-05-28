@@ -101,7 +101,8 @@ void PlayState::update(const sf::Time &dt)
 	// If the player collides with a planet then
 	// we should play a particle effect & then
 	// once the effect is complete, we'll reset
-	if (m_rocket.didHitPlanet())
+	const auto collisionInfo = m_rocket.getCollisionInfo();
+	if (collisionInfo)
 	{
 		auto result = std::find_if(m_particleEffects.begin(), m_particleEffects.end(), [](const auto &effect) -> bool
 								   { return effect->getEffectType() == ParticleEffect::Type::Planet_Collision; });
@@ -112,8 +113,8 @@ void PlayState::update(const sf::Time &dt)
 			// Add particle effect
 			m_particleEffects.push_back(std::make_unique<ParticleEffect>(
 				ParticleEffect::Type::Planet_Collision,
-				m_rocket.getPosition(),
-				m_rocket.getCollisionNormal()));
+				collisionInfo.value().point,
+				collisionInfo.value().normal));
 		}
 		else
 		{

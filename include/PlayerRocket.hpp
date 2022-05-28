@@ -3,9 +3,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Sound.hpp>
+#include <optional> 
 
 #include "PhysicsWorld.hpp"
-class GameLevel;
+#include "GameLevel.hpp"
 
 class PlayerRocket : public sf::Drawable
 {
@@ -16,8 +17,8 @@ public:
 	void levelStart();
 
 	auto isInBounds(const sf::RenderWindow &window) const -> bool;
-	auto didHitPlanet() const -> bool;
-	auto getCollisionNormal() const -> sf::Vector2f;
+	auto getCollisionInfo() const -> std::optional<GameLevel::PlanetCollisionInfo>;
+
 	auto getPosition() const -> sf::Vector2f;
 
 protected:
@@ -30,7 +31,7 @@ private:
 	sf::RectangleShape m_shape;
 	GameLevel &m_gameLevel;
 
-	sf::Vector2f m_collisionNormal;
+	std::optional<GameLevel::PlanetCollisionInfo> m_collisionInfo;
 	sf::Texture m_texture;
 	sf::SoundBuffer m_sbResetLevel;
 	sf::Sound m_resetLevelSfx;
@@ -39,6 +40,4 @@ private:
 
 	std::size_t m_particleIndex{0};
 	sf::Uint32 m_emitCounter{0};
-	
-	bool m_collidedWithPlanet{false};
 };
