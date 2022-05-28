@@ -3,6 +3,7 @@
 #include <cassert>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Color.hpp>
 #include <spdlog/spdlog.h>
 
 std::random_device ParticleEffect::m_randomDevice;
@@ -10,6 +11,30 @@ std::random_device ParticleEffect::m_randomDevice;
 constexpr std::size_t PLANET_COLLISION_PARTICLE_COUNT{300};
 constexpr auto PLANET_COLLISION_PARTICLE_MAX_SPEED{200.0f};
 constexpr auto PLANET_COLLISION_PARTICLE_MIN_SPEED{120.0f};
+constexpr auto PLANET_COLLISION_PARTICLE_COLOUR_START{sf::Color{252, 119, 3}};
+constexpr auto PLANET_COLLISION_PARTICLE_COLOUR_END{sf::Color{50, 50, 50}};
+
+float lerp(float v0, float v1, float t)
+{
+	return (1 - t) * v0 + t * v1;
+}
+
+sf::Color lerp_colour(const sf::Color &start, const sf::Color &end, float t)
+{
+	const auto start_red = start.r / 255.0f;
+	const auto start_green = start.g / 255.0f;
+	const auto start_blue = start.b / 255.0f;
+
+	const auto end_red = end.r / 255.0f;
+	const auto end_green = end.g / 255.0f;
+	const auto end_blue = end.b / 255.0f;
+
+	const auto outputRed = lerp(start_red, end_red, t);
+	const auto outputGreen = lerp(start_green, end_green, t);
+	const auto outputBlue = lerp(start_blue, end_blue, t);
+
+	return {static_cast<sf::Uint8>(outputRed * 255.0f), static_cast<sf::Uint8>(outputGreen * 255.0f), static_cast<sf::Uint8>(outputBlue * 255.0f)};
+}
 
 ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f normal)
 	: m_effectType(type),
@@ -35,6 +60,7 @@ ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f no
 		for (std::size_t i = 0; i < PLANET_COLLISION_PARTICLE_COUNT; ++i)
 		{
 			m_vertices[i].position = position;
+			m_vertices[i].color = PLANET_COLLISION_PARTICLE_COLOUR_START;
 			const auto angle = sf::degrees(angleDist(m_randomEngine));
 			m_velocities[i] = sf::Vector2f{speedDist(m_randomEngine), angle};
 		}
@@ -51,9 +77,8 @@ ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f no
 void ParticleEffect::update(const sf::Time &dt)
 {
 	m_aliveTime += dt;
-	if (m_aliveTime > m_duration)
+	if (m_aliveTime >= m_duration)
 	{
-		spdlog::debug("Effect finished playing");
 		m_isPlaying = false;
 		return;
 	}
@@ -61,9 +86,12 @@ void ParticleEffect::update(const sf::Time &dt)
 	{
 	case Type::Planet_Collision:
 	{
+		const float t = std::min(m_aliveTime.asSeconds() / m_duration.asSeconds(), 1.0f);
+		const auto newColour = lerp_colour(PLANET_COLLISION_PARTICLE_COLOUR_START, PLANET_COLLISION_PARTICLE_COLOUR_END, t);
 		for (std::size_t i = 0; i < PLANET_COLLISION_PARTICLE_COUNT; ++i)
 		{
 			m_vertices[i].position += m_velocities[i] * dt.asSeconds();
+			m_vertices[i].color = newColour;
 		}
 	}
 	break;

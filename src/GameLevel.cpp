@@ -88,7 +88,7 @@ void GameLevel::loadLevel(Levels level)
 		{
 			levelFile >> m_playerStart.x >> m_playerStart.y;
 		}
-		else if (line[0] == 'p') // Load planet positions
+		else if (line[0] == 'p') // Load planets
 		{
 			m_planets.emplace_back();
 			float radius{0.0f};
@@ -100,7 +100,7 @@ void GameLevel::loadLevel(Levels level)
 			m_planets.back().shape.setPosition(position);
 			m_planets.back().shape.setFillColor(sf::Color::Green);
 		}
-		else if (line[0] == 'o')
+		else if (line[0] == 'o') // Load objectives
 		{
 			sf::Vector2f pos;
 			levelFile >> pos.x >> pos.y;
