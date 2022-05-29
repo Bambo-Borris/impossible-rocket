@@ -19,7 +19,6 @@ PlayState::PlayState(sf::RenderWindow &window)
 	  m_mainFont(AssetHolder::get().getFont("bin/fonts/VCR_OSD_MONO_1.001.ttf"))
 {
 	m_gameLevel.loadLevel(GameLevel::Levels::One);
-	m_rocket.levelStart();
 
 	m_backgroundTexture->setRepeated(true);
 
@@ -167,6 +166,11 @@ void PlayState::update(const sf::Time &dt)
 		attempts = m_gameLevel.getAttemptTotal();
 		m_uiAttempts.setString(fmt::format("Attempts: {}", attempts));
 	}
+}
+
+void PlayState::enter()
+{ 
+	m_rocket.levelStart();
 }
 
 void PlayState::draw() const

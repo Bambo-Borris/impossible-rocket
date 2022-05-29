@@ -24,6 +24,8 @@ public:
 	auto wasResetPressed() const -> bool;
 	auto getPadType() const -> PadType;
 	auto debugSkipPressed() const -> bool;
+	auto getMousePosition() const -> sf::Vector2f; 
+	auto leftClickPressed() const -> bool; 
 
 private:
 	InputHandler() = default;
@@ -34,6 +36,8 @@ private:
 
 	PadType m_padType{PadType::Xbox_Pad};
 	InputState m_state{};
+	sf::Vector2f m_mousePosition;
 	bool m_resetPressed{false};
 	bool m_debugSkipPressed{false};
+	bool m_leftJustPressed{false};
 };
