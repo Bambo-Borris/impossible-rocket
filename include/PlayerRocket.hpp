@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Sound.hpp>
-#include <optional> 
+#include <optional>
 
 #include "PhysicsWorld.hpp"
 #include "GameLevel.hpp"
@@ -32,12 +32,12 @@ private:
 	GameLevel &m_gameLevel;
 
 	std::optional<GameLevel::PlanetCollisionInfo> m_collisionInfo;
-	sf::Texture* m_texture;
-	sf::SoundBuffer* m_sbResetLevel;
-	sf::SoundBuffer* m_sbPlanetCollide;
+	sf::Texture *m_texture;
+	sf::SoundBuffer *m_sbResetLevel;
+	sf::SoundBuffer *m_sbPlanetCollide;
 	sf::Sound m_resetLevelSfx;
 	sf::Sound m_planetCollideSfx;
-	
+
 	sf::VertexArray m_trailVertices;
 
 	std::size_t m_particleIndex{0};
