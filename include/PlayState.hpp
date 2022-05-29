@@ -23,9 +23,9 @@ private:
 	GameLevel m_gameLevel;
 	PlayerRocket m_rocket;
 
-	sf::Texture m_backgroundTexture;
+	sf::Texture* m_backgroundTexture;
 	sf::RectangleShape m_backgroundSprite;
-	sf::Font m_mainFont;
+	sf::Font* m_mainFont;
 	sf::Text m_uiPadType;
 	sf::Text m_uiAttempts;
 	sf::Text m_uiOOB;

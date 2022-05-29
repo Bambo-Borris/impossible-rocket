@@ -1,5 +1,6 @@
 #include "PlayerRocket.hpp"
 #include "InputHandler.hpp"
+#include "AssetHolder.hpp"
 
 #include <array>
 #include <cassert>
@@ -15,22 +16,18 @@ constexpr sf::Vector2f PARTICLE_SIZE{4.0f, 4.0f};
 PlayerRocket::PlayerRocket(PhysicsWorld &world, GameLevel &levelGeometry)
 	: m_body(world.addBody()),
 	  m_gameLevel(levelGeometry),
-	  m_shape({32.0f, 32.0f})
+	  m_shape({32.0f, 32.0f}),
+	  m_texture(AssetHolder::get().getTexture("bin/textures/ship.png")),
+	  m_sbResetLevel(AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav"))
 {
 	m_shape.setOrigin(ROCKET_SIZE * 0.5f);
 	m_body->inertia = 1.0e3f;
 	m_body->mass = 1.0e5f;
 	m_body->transformable = &m_shape;
 
-	if (!m_texture.loadFromFile("bin/textures/ship.png"))
-		throw std::runtime_error("Unable to load player rocket texture");
+	m_resetLevelSfx.setBuffer(*m_sbResetLevel);
 
-	if (!m_sbResetLevel.loadFromFile("bin/sounds/level_reset.wav"))
-		throw std::runtime_error("Unable to load level_reset.wav");
-
-	m_resetLevelSfx.setBuffer(m_sbResetLevel);
-
-	m_shape.setTexture(&m_texture);
+	m_shape.setTexture(m_texture);
 	m_trailVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 }
 
@@ -72,7 +69,7 @@ void PlayerRocket::update(const sf::Time &dt)
 void PlayerRocket::levelStart()
 {
 	m_collisionInfo.reset();
-	
+
 	// Shape & physics reset
 	m_shape.setPosition(m_gameLevel.getPlayerStart());
 	m_shape.setRotation(sf::degrees(0.0f));

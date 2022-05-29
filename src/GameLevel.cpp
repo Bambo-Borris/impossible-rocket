@@ -1,4 +1,5 @@
 #include "GameLevel.hpp"
+#include "AssetHolder.hpp"
 
 #include <string>
 #include <fstream>
@@ -26,14 +27,10 @@ std::optional<GameLevel::PlanetCollisionInfo> circle_vs_circle(const sf::Vector2
 }
 
 GameLevel::GameLevel()
+	: m_objectiveTexture(AssetHolder::get().getTexture("bin/textures/objective_ring.png")),
+	  m_sbCollectObjective(AssetHolder::get().getSoundBuffer("bin/sounds/objective_collect.wav"))
 {
-	if (!m_objectiveTexture.loadFromFile("bin/textures/objective_ring.png"))
-		throw std::runtime_error("Unable to load objective texture");
-
-	if (!m_sbCollectObjective.loadFromFile("bin/sounds/objective_collect.wav"))
-		throw std::runtime_error("Unable to load objective_collect.wav");
-
-	m_collectObjective.setBuffer(m_sbCollectObjective);
+	m_collectObjective.setBuffer(*m_sbCollectObjective);
 }
 
 void GameLevel::loadLevel(Levels level)
@@ -108,7 +105,7 @@ void GameLevel::loadLevel(Levels level)
 			Objective o{sf::RectangleShape{OBJECTIVE_SIZE}, true};
 
 			o.shape.setOrigin(OBJECTIVE_SIZE * 0.5f);
-			o.shape.setTexture(&m_objectiveTexture);
+			o.shape.setTexture(m_objectiveTexture);
 			o.shape.setPosition(pos);
 			m_objectives.push_back(o);
 		}

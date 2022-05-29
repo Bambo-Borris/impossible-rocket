@@ -69,8 +69,8 @@ private:
 
 	sf::Vector2f m_playerStart;
 
-	sf::Texture m_objectiveTexture;
-	sf::SoundBuffer m_sbCollectObjective;
+	sf::Texture* m_objectiveTexture;
+	sf::SoundBuffer* m_sbCollectObjective;
 	sf::Sound m_collectObjective;
 
 	Levels m_currentLevel = Levels::Developer;

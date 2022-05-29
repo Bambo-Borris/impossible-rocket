@@ -42,7 +42,7 @@ private:
 	sf::Time m_duration;
 	sf::Time m_aliveTime;
 
-	sf::Texture m_planetCollisionTexture;
+	sf::Texture* m_planetCollisionTexture;
 
 	static std::random_device m_randomDevice;
 	std::default_random_engine m_randomEngine;

@@ -1,4 +1,5 @@
 #include "ParticleEffect.hpp"
+#include "AssetHolder.hpp"
 
 #include <cassert>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -52,16 +53,9 @@ ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f no
 	: m_effectType(type),
 	  m_position(position),
 	  m_normal(normal),
-	  m_randomEngine(m_randomDevice())
+	  m_randomEngine(m_randomDevice()),
+	  m_planetCollisionTexture(AssetHolder::get().getTexture("bin/textures/explosion.png"))
 {
-	// TODO: It's now reached a stage where we are loading assets
-	// on a class that may be constructed constantly mid frame
-	// we should probably opt to instead load these assets
-	// via a different class & allow this class to query
-	// that one...
-	if (!m_planetCollisionTexture.loadFromFile("bin/textures/explosion.png"))
-		throw std::runtime_error("Unable to load planet collision texture for particle effect!");
-
 	switch (m_effectType)
 	{
 	case Type::Planet_Collision:
@@ -73,7 +67,7 @@ ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f no
 		const auto normalAngle = m_normal != sf::Vector2f{} ? m_normal.angle().asDegrees() : 0.0f;
 		const auto min = normalAngle - 45.0f;
 		const auto max = normalAngle + 45.0f;
-		const auto texSize = sf::Vector2f(m_planetCollisionTexture.getSize());
+		const auto texSize = sf::Vector2f(m_planetCollisionTexture->getSize());
 		std::uniform_real_distribution<float> angleDist(min, max);
 		std::uniform_real_distribution<float> speedDist(PLANET_COLLISION_PARTICLE_MIN_SPEED, PLANET_COLLISION_PARTICLE_MAX_SPEED);
 
@@ -170,6 +164,6 @@ auto ParticleEffect::getEffectType() const -> Type
 void ParticleEffect::draw(sf::RenderTarget &target, const sf::RenderStates &states) const
 {
 	auto statesCopy = states;
-	statesCopy.texture = &m_planetCollisionTexture;
+	statesCopy.texture = m_planetCollisionTexture;
 	target.draw(m_vertices, statesCopy);
 }

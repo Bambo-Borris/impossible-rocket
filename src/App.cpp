@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "InputHandler.hpp"
 #include "PlayState.hpp"
+#include "AssetHolder.hpp"
 
 #include <string>
 #include <spdlog/spdlog.h>
@@ -17,7 +18,10 @@ App::App()
 
 	m_window.setFramerateLimit(60);
 	m_window.setKeyRepeatEnabled(false);
-	InputHandler::get(); // construct handler
+	
+	// Sigleton creation;
+	InputHandler::get();
+	AssetHolder::get(); 
 
 	m_states.push(std::make_unique<PlayState>(m_window));
 
@@ -32,6 +36,9 @@ App::~App()
 	{
 		m_states.pop();
 	}
+
+	delete (&InputHandler::get());
+	delete (&AssetHolder::get());
 }
 
 void App::run()
