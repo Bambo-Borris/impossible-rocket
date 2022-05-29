@@ -53,6 +53,12 @@ void GameLevel::loadLevel(Levels level)
 	case GameLevel::Levels::Four:
 		levelPath = "bin/levels/level_4.txt";
 		break;
+	case GameLevel::Levels::Five:
+		levelPath = "bin/levels/level_5.txt";
+		break;
+	case GameLevel::Levels::Six:
+		levelPath = "bin/levels/level_6.txt";
+		break;
 	default:
 		assert(false);
 		break;

@@ -12,7 +12,7 @@ class GameLevel
 	: public sf::Drawable
 {
 public:
-	struct PlanetCollisionInfo 
+	struct PlanetCollisionInfo
 	{
 		sf::Vector2f normal;
 		sf::Vector2f point;
@@ -25,6 +25,8 @@ public:
 		Two,
 		Three,
 		Four,
+		Five,
+		Six,
 		MAX_LEVEL
 	};
 
@@ -69,8 +71,8 @@ private:
 
 	sf::Vector2f m_playerStart;
 
-	sf::Texture* m_objectiveTexture;
-	sf::SoundBuffer* m_sbCollectObjective;
+	sf::Texture *m_objectiveTexture;
+	sf::SoundBuffer *m_sbCollectObjective;
 	sf::Sound m_collectObjective;
 
 	Levels m_currentLevel = Levels::Developer;
