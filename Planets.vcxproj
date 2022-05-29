@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\imgui-sfml\imgui-SFML.cpp" />
+    <ClCompile Include="src\AssetHolder.cpp" />
     <ClCompile Include="src\InputHandler.cpp" />
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\GameLevel.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="external\imgui-sfml\imgui-SFML.h" />
     <ClInclude Include="external\imgui-sfml\imgui-SFML_export.h" />
     <ClInclude Include="include\App.hpp" />
+    <ClInclude Include="include\AssetHolder.hpp" />
     <ClInclude Include="include\InputHandler.hpp" />
     <ClInclude Include="include\GameLevel.hpp" />
     <ClInclude Include="include\ParticleEffect.hpp" />

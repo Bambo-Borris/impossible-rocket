@@ -1,5 +1,6 @@
 #include "PlayState.hpp"
 #include "InputHandler.hpp"
+#include "AssetHolder.hpp"
 
 #include <string>
 #include <spdlog/spdlog.h>
@@ -13,32 +14,28 @@ constexpr auto FIXED_TIME_STEP = sf::seconds(1.0f / 120.0f);
 
 PlayState::PlayState(sf::RenderWindow &window)
 	: BaseState(window),
-	  m_rocket(m_physicsWorld, m_gameLevel)
+	  m_rocket(m_physicsWorld, m_gameLevel),
+	  m_backgroundTexture(AssetHolder::get().getTexture("bin/textures/background_resized.png")),
+	  m_mainFont(AssetHolder::get().getFont("bin/fonts/VCR_OSD_MONO_1.001.ttf"))
 {
 	m_gameLevel.loadLevel(GameLevel::Levels::One);
 	m_rocket.levelStart();
 
-	if (!m_backgroundTexture.loadFromFile("bin/textures/background_resized.png"))
-		throw std::runtime_error("Unable to load background texture");
-
-	m_backgroundTexture.setRepeated(true);
+	m_backgroundTexture->setRepeated(true);
 
 	m_backgroundSprite.setSize(sf::Vector2f(m_window.getSize()));
-	m_backgroundSprite.setTexture(&m_backgroundTexture);
+	m_backgroundSprite.setTexture(m_backgroundTexture);
 	m_backgroundSprite.setTextureRect({{0, 0}, {600, 400}});
 
-	if (!m_mainFont.loadFromFile("bin/fonts/VCR_OSD_MONO_1.001.ttf"))
-		throw std::runtime_error("Unable to load default font");
-
-	m_uiPadType.setFont(m_mainFont);
+	m_uiPadType.setFont(*m_mainFont);
 	m_uiPadType.setString("Xbox");
 	const auto bounds = m_uiPadType.getGlobalBounds();
 	m_uiPadType.setPosition({800.0f - bounds.width, 0.0f});
 
-	m_uiAttempts.setFont(m_mainFont);
+	m_uiAttempts.setFont(*m_mainFont);
 	m_uiAttempts.setString("Attempts: 1");
 
-	m_uiOOB.setFont(m_mainFont);
+	m_uiOOB.setFont(*m_mainFont);
 }
 
 void PlayState::update(const sf::Time &dt)

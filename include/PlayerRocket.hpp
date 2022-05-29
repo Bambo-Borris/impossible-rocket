@@ -32,8 +32,8 @@ private:
 	GameLevel &m_gameLevel;
 
 	std::optional<GameLevel::PlanetCollisionInfo> m_collisionInfo;
-	sf::Texture m_texture;
-	sf::SoundBuffer m_sbResetLevel;
+	sf::Texture* m_texture;
+	sf::SoundBuffer* m_sbResetLevel;
 	sf::Sound m_resetLevelSfx;
 
 	sf::VertexArray m_trailVertices;
