@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "InputHandler.hpp"
 #include "PlayState.hpp"
+#include "MenuState.hpp"
 #include "AssetHolder.hpp"
 
 #include <string>
@@ -18,12 +19,13 @@ App::App()
 
 	m_window.setFramerateLimit(60);
 	m_window.setKeyRepeatEnabled(false);
-	
+
 	// Sigleton creation;
 	InputHandler::get();
-	AssetHolder::get(); 
+	AssetHolder::get();
 
 	m_states.push(std::make_unique<PlayState>(m_window));
+	m_states.push(std::make_unique<MenuState>(m_window));
 
 	ImGui::SFML::Init(m_window);
 }
@@ -45,6 +47,8 @@ void App::run()
 {
 	sf::Clock loopClock;
 
+	m_states.top()->enter();
+
 	while (m_window.isOpen())
 	{
 		auto deltaTime = loopClock.restart();
@@ -57,6 +61,14 @@ void App::run()
 
 		InputHandler::get().handleEvents(m_window);
 		ImGui::SFML::Update(m_window, deltaTime);
+
+		if (m_states.top()->isStateCompleted())
+		{
+			m_states.pop();
+			assert(!m_states.empty());
+			m_states.top()->enter();
+		}
+
 		m_states.top()->update(deltaTime);
 
 		m_window.clear();

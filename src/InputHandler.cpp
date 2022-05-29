@@ -33,20 +33,29 @@ void InputHandler::handleEvents(sf::RenderWindow &window)
 {
 	m_resetPressed = false;
 	m_debugSkipPressed = false;
+	m_leftJustPressed = false;
+
 	sf::Event event;
 	while (window.pollEvent(event))
 	{
 		ImGui::SFML::ProcessEvent(window, event);
 		if (event.type == sf::Event::Closed)
-		{
 			window.close();
-		}
 
 		if (event.type == sf::Event::KeyPressed)
-		{
 			if (event.key.code == sf::Keyboard::Key::Escape)
 				window.close();
+
+		if (event.type == sf::Event::MouseMoved)
+		{
+			const sf::Vector2i pos{event.mouseMove.x, event.mouseMove.y};
+			m_mousePosition = window.mapPixelToCoords(pos);
 		}
+
+		if (event.type == sf::Event::MouseButtonReleased)
+			if (event.mouseButton.button == sf::Mouse::Left)
+				m_leftJustPressed = true;
+
 		handleKeyboard(event);
 		switch (m_padType)
 		{
@@ -84,6 +93,16 @@ auto InputHandler::debugSkipPressed() const -> bool
 	return m_debugSkipPressed;
 }
 
+auto InputHandler::getMousePosition() const -> sf::Vector2f
+{
+	return m_mousePosition;
+}
+
+auto InputHandler::leftClickPressed() const -> bool
+{
+	return m_leftJustPressed;
+}
+
 void InputHandler::handleKeyboard(const sf::Event &event)
 {
 	if (event.type == sf::Event::KeyPressed)
@@ -116,7 +135,6 @@ void InputHandler::handleKeyboard(const sf::Event &event)
 			case PadType::Xbox_Pad:
 				m_padType = PadType::DS4_Pad;
 				break;
-
 			case PadType::DS4_Pad:
 				m_padType = PadType::Xbox_Pad;
 				break;
@@ -146,20 +164,12 @@ void InputHandler::handleXbox(const sf::Event &event)
 
 	// Button presses
 	if (event.type == sf::Event::JoystickButtonPressed)
-	{
 		if (event.joystickButton.button == START_BUTTON_ID)
-		{
 			m_resetPressed = true;
-		}
-	}
 
 	if (event.type == sf::Event::JoystickButtonReleased)
-	{
 		if (event.joystickButton.button == START_BUTTON_ID)
-		{
 			m_resetPressed = false;
-		}
-	}
 
 	// Analogue inputs
 	if (event.type == sf::Event::JoystickMoved)
@@ -167,9 +177,7 @@ void InputHandler::handleXbox(const sf::Event &event)
 
 		// Left Joystick
 		if (event.joystickMove.axis == sf::Joystick::X)
-		{
 			m_state.angular_thrust = get_normalized_axis_value(event.joystickMove.position);
-		}
 
 		// Left & Right trigger
 		if (event.joystickMove.axis == sf::Joystick::Z)
@@ -188,20 +196,12 @@ void InputHandler::handleDS4(const sf::Event &event)
 
 	// Button presses
 	if (event.type == sf::Event::JoystickButtonPressed)
-	{
 		if (event.joystickButton.button == START_BUTTON_ID)
-		{
 			m_resetPressed = true;
-		}
-	}
 
 	if (event.type == sf::Event::JoystickButtonReleased)
-	{
 		if (event.joystickButton.button == START_BUTTON_ID)
-		{
 			m_resetPressed = false;
-		}
-	}
 
 	// Analogue inputs
 	if (event.type == sf::Event::JoystickMoved)
@@ -209,26 +209,20 @@ void InputHandler::handleDS4(const sf::Event &event)
 
 		// Left Joystick
 		if (event.joystickMove.axis == sf::Joystick::X)
-		{
 			m_state.angular_thrust = get_normalized_axis_value(event.joystickMove.position);
-		}
 
 		// Left trigger
 		if (event.joystickMove.axis == sf::Joystick::U)
-		{
 			if (event.joystickMove.position > -AXIS_DEADZONE_UPPER)
 				m_state.linear_thrust = -get_normalized_axis_value(fabsf(event.joystickMove.position));
 			else
 				m_state.linear_thrust = 0.0f;
-		}
 
 		// Right trigger
 		if (event.joystickMove.axis == sf::Joystick::V)
-		{
 			if (event.joystickMove.position > -AXIS_DEADZONE_UPPER)
 				m_state.linear_thrust = get_normalized_axis_value(fabsf(event.joystickMove.position));
 			else
 				m_state.linear_thrust = 0.0f;
-		}
 	}
 }
