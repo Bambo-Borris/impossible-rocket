@@ -18,7 +18,8 @@ PlayerRocket::PlayerRocket(PhysicsWorld &world, GameLevel &levelGeometry)
 	  m_gameLevel(levelGeometry),
 	  m_shape({32.0f, 32.0f}),
 	  m_texture(AssetHolder::get().getTexture("bin/textures/ship.png")),
-	  m_sbResetLevel(AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav"))
+	  m_sbResetLevel(AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav")),
+	  m_sbPlanetCollide(AssetHolder::get().getSoundBuffer("bin/sounds/planet_collide.wav"))
 {
 	m_shape.setOrigin(ROCKET_SIZE * 0.5f);
 	m_body->inertia = 1.0e3f;
@@ -26,6 +27,7 @@ PlayerRocket::PlayerRocket(PhysicsWorld &world, GameLevel &levelGeometry)
 	m_body->transformable = &m_shape;
 
 	m_resetLevelSfx.setBuffer(*m_sbResetLevel);
+	m_planetCollideSfx.setBuffer(*m_sbPlanetCollide);
 
 	m_shape.setTexture(m_texture);
 	m_trailVertices.setPrimitiveType(sf::PrimitiveType::Triangles);
@@ -52,6 +54,8 @@ void PlayerRocket::update(const sf::Time &dt)
 	{
 		m_body->isActive = false;
 		m_collisionInfo = result;
+		if (m_planetCollideSfx.getStatus() != sf::Sound::Status::Playing)
+			m_planetCollideSfx.play();
 	}
 
 	m_gameLevel.handleObjectiveIntersections(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
