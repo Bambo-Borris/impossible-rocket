@@ -4,7 +4,7 @@
 
 #include <array>
 #include <cassert>
-#include <imgui-sfml/imgui-SFML.h>
+#include <imgui-SFML.h>
 #include <imgui.h>
 #include "GameplayBlackboard.hpp"
 

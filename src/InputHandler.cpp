@@ -3,7 +3,7 @@
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Event.hpp>
 #include <cassert>
-#include <imgui-sfml/imgui-SFML.h>
+#include <imgui-SFML.h>
 
 constexpr auto AXIS_DEADZONE_LOWER = 5.0f;
 constexpr auto AXIS_DEADZONE_UPPER = 95.0f;

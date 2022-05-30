@@ -6,8 +6,8 @@
 
 #include <string>
 #include <spdlog/spdlog.h>
-#include <fmt/format.h>
-#include <imgui-sfml/imgui-SFML.h>
+#include <spdlog/fmt/fmt.h>
+#include <imgui-SFML.h>
 #include <imgui.h>
 
 constexpr auto WINDOW_TITLE{"Impossible Rocket - [indev]"};

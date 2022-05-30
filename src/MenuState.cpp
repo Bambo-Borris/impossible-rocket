@@ -21,7 +21,7 @@ MenuState::MenuState(sf::RenderWindow &window)
 	m_creditsText.setCharacterSize(24);
 	m_creditsText.setString("Created by Bambo!");
 
-	m_backgroundSprite.setSize({m_window.getSize()});
+	m_backgroundSprite.setSize(sf::Vector2f{m_window.getSize()});
 	m_backgroundSprite.setTexture(backgroundTex);
 	m_backgroundSprite.setTextureRect({{0, 0}, {600, 400}});
 

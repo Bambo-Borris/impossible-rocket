@@ -5,7 +5,7 @@
 #include <string>
 #include <fstream>
 #include <cassert>
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 

@@ -23,9 +23,9 @@ public:
 
 private:
 	AssetHolder() = default;
-	std::unordered_map<std::filesystem::path, sf::Font> m_fontMap;
-	std::unordered_map<std::filesystem::path, sf::Texture> m_textureMap;
-	std::unordered_map<std::filesystem::path, sf::SoundBuffer> m_soundBufferMap;
+	std::unordered_map<std::string, sf::Font> m_fontMap;
+	std::unordered_map<std::string, sf::Texture> m_textureMap;
+	std::unordered_map<std::string, sf::SoundBuffer> m_soundBufferMap;
 
 	// TODO: add implementations to load music
 };

@@ -27,7 +27,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="external\imgui-sfml\imgui-SFML.cpp" />
     <ClCompile Include="src\AssetHolder.cpp" />
     <ClCompile Include="src\InputHandler.cpp" />
     <ClCompile Include="src\App.cpp" />
@@ -41,21 +40,18 @@
     <ClCompile Include="src\PlayState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="external\imgui-sfml\imconfig-SFML.h" />
-    <ClInclude Include="external\imgui-sfml\imgui-SFML.h" />
-    <ClInclude Include="external\imgui-sfml\imgui-SFML_export.h" />
-    <ClInclude Include="include\App.hpp" />
-    <ClInclude Include="include\AssetHolder.hpp" />
-    <ClInclude Include="include\GameplayBlackboard.hpp" />
-    <ClInclude Include="include\InputHandler.hpp" />
-    <ClInclude Include="include\GameLevel.hpp" />
-    <ClInclude Include="include\MenuState.hpp" />
-    <ClInclude Include="include\ParticleEffect.hpp" />
-    <ClInclude Include="include\PhysicsWorld.hpp" />
-    <ClInclude Include="include\PlayerRocket.hpp" />
-    <ClInclude Include="include\BaseState.hpp" />
-    <ClInclude Include="include\PlayState.hpp" />
-    <ClInclude Include="include\SFUtility.hpp" />
+    <ClInclude Include="src\App.hpp" />
+    <ClInclude Include="src\AssetHolder.hpp" />
+    <ClInclude Include="src\GameplayBlackboard.hpp" />
+    <ClInclude Include="src\InputHandler.hpp" />
+    <ClInclude Include="src\GameLevel.hpp" />
+    <ClInclude Include="src\MenuState.hpp" />
+    <ClInclude Include="src\ParticleEffect.hpp" />
+    <ClInclude Include="src\PhysicsWorld.hpp" />
+    <ClInclude Include="src\PlayerRocket.hpp" />
+    <ClInclude Include="src\BaseState.hpp" />
+    <ClInclude Include="src\PlayState.hpp" />
+    <ClInclude Include="src\SFUtility.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -30,9 +30,6 @@
     <ClCompile Include="src\InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="external\imgui-sfml\imgui-SFML.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,49 +50,40 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\App.hpp">
+    <ClInclude Include="src\App.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\PhysicsWorld.hpp">
+    <ClInclude Include="src\PhysicsWorld.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\PlayerRocket.hpp">
+    <ClInclude Include="src\PlayerRocket.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="external\imgui-sfml\imconfig-SFML.h">
+    <ClInclude Include="src\GameLevel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="external\imgui-sfml\imgui-SFML.h">
+    <ClInclude Include="src\InputHandler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="external\imgui-sfml\imgui-SFML_export.h">
+    <ClInclude Include="src\BaseState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GameLevel.hpp">
+    <ClInclude Include="src\PlayState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\InputHandler.hpp">
+    <ClInclude Include="src\ParticleEffect.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BaseState.hpp">
+    <ClInclude Include="src\AssetHolder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\PlayState.hpp">
+    <ClInclude Include="src\MenuState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ParticleEffect.hpp">
+    <ClInclude Include="src\SFUtility.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\AssetHolder.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MenuState.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SFUtility.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GameplayBlackboard.hpp">
+    <ClInclude Include="src\GameplayBlackboard.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
