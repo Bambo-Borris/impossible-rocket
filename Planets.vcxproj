@@ -46,6 +46,7 @@
     <ClInclude Include="external\imgui-sfml\imgui-SFML_export.h" />
     <ClInclude Include="include\App.hpp" />
     <ClInclude Include="include\AssetHolder.hpp" />
+    <ClInclude Include="include\GameplayBlackboard.hpp" />
     <ClInclude Include="include\InputHandler.hpp" />
     <ClInclude Include="include\GameLevel.hpp" />
     <ClInclude Include="include\MenuState.hpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="include\PlayerRocket.hpp" />
     <ClInclude Include="include\BaseState.hpp" />
     <ClInclude Include="include\PlayState.hpp" />
+    <ClInclude Include="include\SFUtility.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
