@@ -6,12 +6,7 @@
 #include <cassert>
 #include <imgui-sfml/imgui-SFML.h>
 #include <imgui.h>
-
-constexpr auto THRUST_FORCE{2.0e7f};
-constexpr auto TORQUE_MAG{8.0e3f};
-constexpr auto TRAIL_PARTICLE_COUNT{50};
-constexpr sf::Vector2f ROCKET_SIZE{32.0f, 32.0f};
-constexpr sf::Vector2f PARTICLE_SIZE{4.0f, 4.0f};
+#include "GameplayBlackboard.hpp"
 
 PlayerRocket::PlayerRocket(PhysicsWorld &world, GameLevel &levelGeometry)
 	: m_body(world.addBody()),
@@ -21,7 +16,7 @@ PlayerRocket::PlayerRocket(PhysicsWorld &world, GameLevel &levelGeometry)
 	  m_sbResetLevel(AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav")),
 	  m_sbPlanetCollide(AssetHolder::get().getSoundBuffer("bin/sounds/planet_collide.wav"))
 {
-	m_shape.setOrigin(ROCKET_SIZE * 0.5f);
+	m_shape.setOrigin(bb::ROCKET_SIZE * 0.5f);
 	m_body->inertia = 1.0e3f;
 	m_body->mass = 1.0e5f;
 	m_body->transformable = &m_shape;
@@ -41,15 +36,15 @@ void PlayerRocket::update(const sf::Time &dt)
 
 	if (state.linear_thrust != 0.0f)
 	{
-		m_body->force += direction * (THRUST_FORCE * state.linear_thrust);
+		m_body->force += direction * (bb::THRUST_FORCE * state.linear_thrust);
 	}
 
 	if (state.angular_thrust != 0.0f)
 	{
-		m_body->torque += TORQUE_MAG * state.angular_thrust;
+		m_body->torque += bb::TORQUE_MAG * state.angular_thrust;
 	}
 
-	auto result = m_gameLevel.doesCollideWithPlanet(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
+	auto result = m_gameLevel.doesCollideWithPlanet(m_shape.getPosition(), bb::ROCKET_SIZE.x / 2.0f);
 	if (result)
 	{
 		m_body->isActive = false;
@@ -58,7 +53,7 @@ void PlayerRocket::update(const sf::Time &dt)
 			m_planetCollideSfx.play();
 	}
 
-	m_gameLevel.handleObjectiveIntersections(m_shape.getPosition(), ROCKET_SIZE.x / 2.0f);
+	m_gameLevel.handleObjectiveIntersections(m_shape.getPosition(), bb::ROCKET_SIZE.x / 2.0f);
 
 	m_body->force += m_gameLevel.getSummedForce(m_shape.getPosition(), m_body->mass);
 	emitParticle();
@@ -102,9 +97,9 @@ void PlayerRocket::levelStart()
 	quad[2].position = offscreen;
 	quad[3].position = offscreen;
 
-	m_trailVertices.resize(static_cast<std::size_t>(TRAIL_PARTICLE_COUNT * 6));
+	m_trailVertices.resize(static_cast<std::size_t>(bb::TRAIL_PARTICLE_COUNT * 6));
 
-	for (std::size_t i = 0; i < TRAIL_PARTICLE_COUNT; ++i)
+	for (std::size_t i = 0; i < bb::TRAIL_PARTICLE_COUNT; ++i)
 	{
 		sf::Vertex *v = &m_trailVertices[i * 6];
 		v[0] = quad[0];
@@ -152,10 +147,10 @@ void PlayerRocket::emitParticle()
 
 	constexpr sf::Vector2f offsets[] =
 		{
-			{-PARTICLE_SIZE.x / 2.0f, -PARTICLE_SIZE.y / 2.0f},
-			{PARTICLE_SIZE.x / 2.0f, -PARTICLE_SIZE.y / 2.0f},
-			{PARTICLE_SIZE.x / 2.0f, PARTICLE_SIZE.y / 2.0f},
-			{-PARTICLE_SIZE.x / 2.0f, PARTICLE_SIZE.y / 2.0f},
+			{-bb::PARTICLE_SIZE.x / 2.0f, -bb::PARTICLE_SIZE.y / 2.0f},
+			{bb::PARTICLE_SIZE.x / 2.0f, -bb::PARTICLE_SIZE.y / 2.0f},
+			{bb::PARTICLE_SIZE.x / 2.0f, bb::PARTICLE_SIZE.y / 2.0f},
+			{-bb::PARTICLE_SIZE.x / 2.0f, bb::PARTICLE_SIZE.y / 2.0f},
 		};
 
 	std::array<sf::Vertex, 4> quad;
@@ -178,5 +173,5 @@ void PlayerRocket::emitParticle()
 	v[5].position = quad[0].position;
 	m_emitCounter = 0;
 
-	m_particleIndex = (m_particleIndex + 1) >= TRAIL_PARTICLE_COUNT ? 0 : (m_particleIndex + 1);
+	m_particleIndex = (m_particleIndex + 1) >= bb::TRAIL_PARTICLE_COUNT ? 0 : (m_particleIndex + 1);
 }

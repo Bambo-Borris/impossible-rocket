@@ -83,7 +83,7 @@ void App::logFPS(const sf::Time &dt)
 	static int counter = 0;
 	static auto sum = sf::Time::Zero;
 
-	if (counter < 50)
+	if (counter < 10)
 	{
 		sum += dt;
 		++counter;

@@ -1,5 +1,6 @@
 #include "GameLevel.hpp"
 #include "AssetHolder.hpp"
+#include "GameplayBlackboard.hpp"
 
 #include <string>
 #include <fstream>
@@ -8,9 +9,6 @@
 #include <spdlog/spdlog.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-constexpr auto BIG_G{6.67e-11f};
-constexpr auto OBJECTIVE_ROTATION_SPEED{50.0f};
-const sf::Vector2f OBJECTIVE_SIZE{24.0f, 24.0f};
 
 std::optional<GameLevel::PlanetCollisionInfo> circle_vs_circle(const sf::Vector2f &position_a, float radius_a, const sf::Vector2f &position_b, float radius_b)
 {
@@ -108,9 +106,9 @@ void GameLevel::loadLevel(Levels level)
 			sf::Vector2f pos;
 			levelFile >> pos.x >> pos.y;
 
-			Objective o{sf::RectangleShape{OBJECTIVE_SIZE}, true};
+			Objective o{sf::RectangleShape{bb::OBJECTIVE_SIZE}, true};
 
-			o.shape.setOrigin(OBJECTIVE_SIZE * 0.5f);
+			o.shape.setOrigin(bb::OBJECTIVE_SIZE * 0.5f);
 			o.shape.setTexture(m_objectiveTexture);
 			o.shape.setPosition(pos);
 			m_objectives.push_back(o);
@@ -128,7 +126,7 @@ void GameLevel::update(const sf::Time &dt)
 		if (!o.isActive)
 			continue;
 
-		o.shape.rotate(dt.asSeconds() * sf::degrees(OBJECTIVE_ROTATION_SPEED));
+		o.shape.rotate(dt.asSeconds() * sf::degrees(bb::OBJECTIVE_ROTATION_SPEED));
 	}
 }
 
@@ -139,7 +137,7 @@ sf::Vector2f GameLevel::getSummedForce(const sf::Vector2f &pos, float mass) cons
 	{
 		const auto delta = p.shape.getPosition() - pos;
 		const float radiusSq = delta.lengthSq();
-		const float forceMag = BIG_G * p.mass * mass / radiusSq;
+		const float forceMag = bb::BIG_G * p.mass * mass / radiusSq;
 
 		sum += (delta / std::sqrt(radiusSq)) * forceMag;
 	}
@@ -164,7 +162,7 @@ void GameLevel::handleObjectiveIntersections(const sf::Vector2f &pos, float radi
 		if (!o.isActive)
 			continue;
 
-		const auto result = circle_vs_circle(pos, radius, o.shape.getPosition(), OBJECTIVE_SIZE.x / 2.0f);
+		const auto result = circle_vs_circle(pos, radius, o.shape.getPosition(), bb::OBJECTIVE_SIZE.x / 2.0f);
 		if (result)
 		{
 			if (m_collectObjective.getStatus() != sf::Sound::Status::Playing)
