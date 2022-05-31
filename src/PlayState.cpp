@@ -49,6 +49,7 @@ void PlayState::update(const sf::Time &dt)
 	m_physicsWorld.step(FIXED_TIME_STEP, dt);
 	m_gameLevel.update(dt);
 	m_rocket.update(dt);
+	
 	for (auto &e : m_particleEffects)
 	{
 		e->update(dt);
@@ -70,6 +71,8 @@ void PlayState::update(const sf::Time &dt)
 		m_isOutOfBounds = false;
 	}
 
+	// If we're out of bounds we need to handle the GUI for the oob timer
+	// and reset the level once OOB for too long
 	if (m_isOutOfBounds)
 	{
 		const auto seconds = static_cast<sf::Int32>(m_oobTimer.getElapsedTime().asSeconds());
@@ -169,7 +172,7 @@ void PlayState::update(const sf::Time &dt)
 }
 
 void PlayState::enter()
-{ 
+{
 	m_rocket.levelStart();
 }
 

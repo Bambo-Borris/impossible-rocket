@@ -24,9 +24,9 @@ private:
 	GameLevel m_gameLevel;
 	PlayerRocket m_rocket;
 
-	sf::Texture* m_backgroundTexture; // TODO: remove and swap to local instance which is passed to .setTexture() call 
+	sf::Texture *m_backgroundTexture; // TODO: remove and swap to local instance which is passed to .setTexture() call
 	sf::RectangleShape m_backgroundSprite;
-	sf::Font* m_mainFont;
+	sf::Font *m_mainFont;
 	sf::Text m_uiPadType;
 	sf::Text m_uiAttempts;
 	sf::Text m_uiOOB;

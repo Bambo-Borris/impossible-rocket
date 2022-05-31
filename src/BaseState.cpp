@@ -6,7 +6,7 @@ BaseState::BaseState(sf::RenderWindow &window)
 {
 }
 
-auto BaseState::isStateCompleted() -> bool const
+auto BaseState::isStateCompleted() const -> bool
 {
 	return m_stateCompleted;
 }
