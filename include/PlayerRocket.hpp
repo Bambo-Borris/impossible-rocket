@@ -20,7 +20,8 @@ public:
 	auto getCollisionInfo() const -> std::optional<GameLevel::PlanetCollisionInfo>;
 
 	auto getPosition() const -> sf::Vector2f;
-
+	auto getExhaustPoint() const -> sf::Vector2f; 
+	
 protected:
 	virtual void draw(sf::RenderTarget &target, const sf::RenderStates &states) const override;
 

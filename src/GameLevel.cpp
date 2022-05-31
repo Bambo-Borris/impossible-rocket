@@ -9,7 +9,6 @@
 #include <spdlog/spdlog.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-
 std::optional<GameLevel::PlanetCollisionInfo> circle_vs_circle(const sf::Vector2f &position_a, float radius_a, const sf::Vector2f &position_b, float radius_b)
 {
 	const float radii_sum_sq = std::pow((radius_a + radius_b), 2.0f);
@@ -25,10 +24,9 @@ std::optional<GameLevel::PlanetCollisionInfo> circle_vs_circle(const sf::Vector2
 }
 
 GameLevel::GameLevel()
-	: m_objectiveTexture(AssetHolder::get().getTexture("bin/textures/objective_ring.png")),
-	  m_sbCollectObjective(AssetHolder::get().getSoundBuffer("bin/sounds/objective_collect.wav"))
 {
-	m_collectObjective.setBuffer(*m_sbCollectObjective);
+	auto sbCollect{AssetHolder::get().getSoundBuffer("bin/sounds/objective_collect.wav")};
+	m_collectObjective.setBuffer(*sbCollect);
 }
 
 void GameLevel::loadLevel(Levels level)
@@ -71,6 +69,7 @@ void GameLevel::loadLevel(Levels level)
 	m_currentLevel = level;
 	m_planets.clear();
 	m_objectives.clear();
+	auto objectiveTexture{AssetHolder::get().getTexture("bin/textures/objective_ring.png")};
 
 	while (!levelFile.eof())
 	{
@@ -109,7 +108,7 @@ void GameLevel::loadLevel(Levels level)
 			Objective o{sf::RectangleShape{bb::OBJECTIVE_SIZE}, true};
 
 			o.shape.setOrigin(bb::OBJECTIVE_SIZE * 0.5f);
-			o.shape.setTexture(m_objectiveTexture);
+			o.shape.setTexture(objectiveTexture);
 			o.shape.setPosition(pos);
 			m_objectives.push_back(o);
 		}

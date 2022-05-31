@@ -14,27 +14,27 @@ constexpr auto FIXED_TIME_STEP = sf::seconds(1.0f / 120.0f);
 
 PlayState::PlayState(sf::RenderWindow &window)
 	: BaseState(window),
-	  m_rocket(m_physicsWorld, m_gameLevel),
-	  m_backgroundTexture(AssetHolder::get().getTexture("bin/textures/background_resized.png")),
-	  m_mainFont(AssetHolder::get().getFont("bin/fonts/VCR_OSD_MONO_1.001.ttf"))
+	  m_rocket(m_physicsWorld, m_gameLevel)
 {
+	auto texture{AssetHolder::get().getTexture("bin/textures/background_resized.png")};
+	auto font{AssetHolder::get().getFont("bin/fonts/VCR_OSD_MONO_1.001.ttf")};
 	m_gameLevel.loadLevel(GameLevel::Levels::One);
 
-	m_backgroundTexture->setRepeated(true);
+	texture->setRepeated(true);
 
 	m_backgroundSprite.setSize(sf::Vector2f(m_window.getSize()));
-	m_backgroundSprite.setTexture(m_backgroundTexture);
+	m_backgroundSprite.setTexture(texture);
 	m_backgroundSprite.setTextureRect({{0, 0}, {600, 400}});
 
-	m_uiPadType.setFont(*m_mainFont);
+	m_uiPadType.setFont(*font);
 	m_uiPadType.setString("Xbox");
 	const auto bounds = m_uiPadType.getGlobalBounds();
 	m_uiPadType.setPosition({800.0f - bounds.width, 0.0f});
 
-	m_uiAttempts.setFont(*m_mainFont);
+	m_uiAttempts.setFont(*font);
 	m_uiAttempts.setString("Attempts: 1");
 
-	m_uiOOB.setFont(*m_mainFont);
+	m_uiOOB.setFont(*font);
 }
 
 void PlayState::update(const sf::Time &dt)
@@ -49,6 +49,7 @@ void PlayState::update(const sf::Time &dt)
 	m_physicsWorld.step(FIXED_TIME_STEP, dt);
 	m_gameLevel.update(dt);
 	m_rocket.update(dt);
+
 	for (auto &e : m_particleEffects)
 	{
 		e->update(dt);
@@ -70,6 +71,8 @@ void PlayState::update(const sf::Time &dt)
 		m_isOutOfBounds = false;
 	}
 
+	// If we're out of bounds we need to handle the GUI for the oob timer
+	// and reset the level once OOB for too long
 	if (m_isOutOfBounds)
 	{
 		const auto seconds = static_cast<sf::Int32>(m_oobTimer.getElapsedTime().asSeconds());
@@ -169,7 +172,7 @@ void PlayState::update(const sf::Time &dt)
 }
 
 void PlayState::enter()
-{ 
+{
 	m_rocket.levelStart();
 }
 
