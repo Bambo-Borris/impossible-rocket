@@ -53,8 +53,8 @@ ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f no
 	: m_effectType(type),
 	  m_position(position),
 	  m_normal(normal),
-	  m_randomEngine(m_randomDevice()),
-	  m_planetCollisionTexture(AssetHolder::get().getTexture("bin/textures/explosion.png"))
+	  m_planetCollisionTexture(AssetHolder::get().getTexture("bin/textures/explosion.png")),
+	  m_randomEngine(m_randomDevice())
 {
 	switch (m_effectType)
 	{

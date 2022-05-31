@@ -4,3 +4,4 @@ build/
 *.zip
 .vscode/
 out/
+Debug/

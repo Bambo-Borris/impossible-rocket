@@ -213,16 +213,20 @@ void InputHandler::handleDS4(const sf::Event &event)
 
 		// Left trigger
 		if (event.joystickMove.axis == sf::Joystick::U)
+		{
 			if (event.joystickMove.position > -AXIS_DEADZONE_UPPER)
 				m_state.linear_thrust = -get_normalized_axis_value(fabsf(event.joystickMove.position));
 			else
 				m_state.linear_thrust = 0.0f;
+		}
 
 		// Right trigger
 		if (event.joystickMove.axis == sf::Joystick::V)
+		{
 			if (event.joystickMove.position > -AXIS_DEADZONE_UPPER)
 				m_state.linear_thrust = get_normalized_axis_value(fabsf(event.joystickMove.position));
 			else
 				m_state.linear_thrust = 0.0f;
+		}
 	}
 }

@@ -45,7 +45,7 @@ void MenuState::enter()
 
 	CentreTextOrigin(m_creditsText);
 	const auto bounds = m_creditsText.getGlobalBounds();
-	m_creditsText.setPosition({(bounds.width / 2.0f), m_window.getSize().y - (bounds.height / 2.0f)});
+	m_creditsText.setPosition({(bounds.width / 2.0f), static_cast<float>(m_window.getSize().y) - (bounds.height / 2.0f)});
 
 	m_animationRocket.setPosition(
 		m_animationPlanet.getPosition() +
