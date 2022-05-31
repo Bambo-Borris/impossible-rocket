@@ -37,7 +37,7 @@ private:
 	sf::Vector2f m_normal;
 	sf::VertexArray m_vertices;
 	std::vector<Particle> m_particles;
-	std::size_t m_emittedIndex{0};
+	//std::size_t m_emittedIndex{0};
 
 	sf::Time m_duration;
 	sf::Time m_aliveTime;

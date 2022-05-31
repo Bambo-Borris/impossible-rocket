@@ -15,7 +15,7 @@ public:
 	PlayState(sf::RenderWindow &window);
 	~PlayState() = default;
 
-	virtual void enter();
+	virtual void enter() override;
 	virtual void update(const sf::Time &dt) override;
 	virtual void draw() const override;
 

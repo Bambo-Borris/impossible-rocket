@@ -4,14 +4,14 @@
 
 #include <array>
 #include <cassert>
-#include <imgui-sfml/imgui-SFML.h>
+#include <imgui-SFML.h>
 #include <imgui.h>
 #include "GameplayBlackboard.hpp"
 
 PlayerRocket::PlayerRocket(PhysicsWorld &world, GameLevel &levelGeometry)
 	: m_body(world.addBody()),
-	  m_gameLevel(levelGeometry),
 	  m_shape({32.0f, 32.0f}),
+	  m_gameLevel(levelGeometry),
 	  m_texture(AssetHolder::get().getTexture("bin/textures/ship.png")),
 	  m_sbResetLevel(AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav")),
 	  m_sbPlanetCollide(AssetHolder::get().getSoundBuffer("bin/sounds/planet_collide.wav"))

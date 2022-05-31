@@ -4,10 +4,10 @@
 
 #include <string>
 #include <spdlog/spdlog.h>
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
-#include <imgui-sfml/imgui-SFML.h>
+#include <imgui-SFML.h>
 
 constexpr auto MAX_OOB_TIME = 5;
 constexpr auto FIXED_TIME_STEP = sf::seconds(1.0f / 120.0f);

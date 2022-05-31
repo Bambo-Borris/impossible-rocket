@@ -6,8 +6,8 @@
 
 #include <string>
 #include <spdlog/spdlog.h>
-#include <fmt/format.h>
-#include <imgui-sfml/imgui-SFML.h>
+#include <spdlog/fmt/fmt.h>
+#include <imgui-SFML.h>
 #include <imgui.h>
 
 constexpr auto WINDOW_TITLE{"Impossible Rocket - [indev]"};
@@ -27,7 +27,8 @@ App::App()
 	m_states.push(std::make_unique<PlayState>(m_window));
 	m_states.push(std::make_unique<MenuState>(m_window));
 
-	ImGui::SFML::Init(m_window);
+	if (!ImGui::SFML::Init(m_window))
+		throw std::runtime_error("Unable to initialise ImGui");
 }
 
 App::~App()
