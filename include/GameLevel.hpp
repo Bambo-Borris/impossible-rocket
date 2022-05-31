@@ -68,13 +68,8 @@ private:
 
 	std::vector<Planet> m_planets;
 	std::vector<Objective> m_objectives;
-
 	sf::Vector2f m_playerStart;
-
-	sf::Texture *m_objectiveTexture;
-	sf::SoundBuffer *m_sbCollectObjective;
 	sf::Sound m_collectObjective;
-
 	Levels m_currentLevel = Levels::Developer;
 	sf::Uint32 m_levelAttempts{1};
 };
