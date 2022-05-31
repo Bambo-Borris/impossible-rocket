@@ -25,7 +25,7 @@ for obj in objGroup:
         xpos = obj["x"] + radius
         ypos = obj["y"] + radius
         mass = obj["properties"][0]["value"]
-        outputFile.write("p {rad} {posX} {posY} {mass}".format(
+        outputFile.write("p {rad} {posX} {posY} {mass}\n".format(
             rad=radius, posX=xpos, posY=ypos, mass=mass))
     elif "point" in obj:
         # extract point here
