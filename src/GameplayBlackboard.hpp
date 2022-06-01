@@ -17,4 +17,4 @@ namespace bb
 	// Menu related
 	constexpr auto MENU_ORBIT_RADIUS{200.0f};
 	constexpr auto MENU_ORBIT_SPEED{50.0f};
-};
+}
