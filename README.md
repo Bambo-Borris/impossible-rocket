@@ -6,16 +6,24 @@ The player takes control of a rocket with difficult controls and battles against
 on each level whilst the clock times their success. 
 
 ## Requirements
-- Microsoft Visual Studio 2022
-- vcpkg
-- SFML 3 (x64)
-- spdlog (spdlog:x64-window)
+- A Compiler
+- CMake (>=3.16)
 
-## Build Instructions (Windows)
-- Download SFML 3 (master on SFML repository)
-- Extract SFML to be under the `C:\` folder
-- Install spdlog:x64-windows on vcpkg
-- Open solution in Visual Studio
-- Copy SFML .dll files to the project root directory
-- Build x64 configuration in release or debug
-- Run and enjoy!
+## Build Instructions
+
+```
+cmake -B build -DBUILD_SHARED_LIBS="FALSE"
+cmake --build build
+```
+
+## Run Instructions
+### Windows
+```
+cp ./build/_deps/sfml-src/extlibs/bin/x64/openal32.dll ./build/Debug/.
+./build/Debug/impossible-rocket.exe
+```
+
+### MacOS & Linux 
+```
+./build/impossible-rocket
+```
