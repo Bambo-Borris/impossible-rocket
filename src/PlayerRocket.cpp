@@ -84,7 +84,7 @@ void PlayerRocket::levelStart()
 	m_particleIndex = 0;
 	m_emitCounter = 0;
 
-	const sf::Vector2f offscreen = {-150.0f, -150.0f};
+	constexpr sf::Vector2f offscreen = {-150.0f, -150.0f};
 	std::array<sf::Vertex, 4> quad;
 
 	quad[0].color = sf::Color::White;
