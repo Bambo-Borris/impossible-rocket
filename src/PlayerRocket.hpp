@@ -21,7 +21,9 @@ public:
 
 	auto getPosition() const -> sf::Vector2f;
 	auto getExhaustPoint() const -> sf::Vector2f; 
-	
+	auto getExhaustDirection() const -> sf::Vector2f;
+	auto isPlayerApplyingForce() const -> bool; 
+
 protected:
 	virtual void draw(sf::RenderTarget &target, const sf::RenderStates &states) const override;
 

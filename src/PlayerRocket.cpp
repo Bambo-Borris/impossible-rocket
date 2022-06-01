@@ -98,6 +98,23 @@ auto PlayerRocket::getPosition() const -> sf::Vector2f
 	return m_shape.getPosition();
 }
 
+auto PlayerRocket::getExhaustPoint() const -> sf::Vector2f
+{
+	return sf::Vector2f();
+}
+
+auto PlayerRocket::getExhaustDirection() const -> sf::Vector2f
+{
+	const auto angle = m_shape.getRotation() + sf::degrees(180.0f);
+	return {1.0f, angle};
+}
+
+auto PlayerRocket::isPlayerApplyingForce() const -> bool
+{
+	const auto state = InputHandler::get().getInputState();
+	return state.linear_thrust != 0.0f;
+}
+
 void PlayerRocket::draw(sf::RenderTarget &target, const sf::RenderStates &states) const
 {
 	target.draw(m_shape, states);
