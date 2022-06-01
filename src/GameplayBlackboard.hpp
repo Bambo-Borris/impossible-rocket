@@ -12,7 +12,7 @@ namespace bb
 	// Level Related
 	constexpr auto BIG_G{6.67e-11f};
 	constexpr auto OBJECTIVE_ROTATION_SPEED{50.0f};
-	const sf::Vector2f OBJECTIVE_SIZE{24.0f, 24.0f};
+	constexpr sf::Vector2f OBJECTIVE_SIZE{24.0f, 24.0f};
 
 	// Menu related
 	constexpr auto MENU_ORBIT_RADIUS{200.0f};
