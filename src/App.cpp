@@ -28,7 +28,7 @@ App::App()
 	m_states.push(std::make_unique<MenuState>(m_window));
 
 	if (!ImGui::SFML::Init(m_window))
-		throw std::runtime_error("Unable to initialise ImGui");
+		throw std::runtime_error("Unable to initialise ImGui SFML");
 }
 
 App::~App()

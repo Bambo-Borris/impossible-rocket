@@ -21,26 +21,19 @@ public:
 
 	auto getPosition() const -> sf::Vector2f;
 	auto getExhaustPoint() const -> sf::Vector2f; 
-	
+	auto getExhaustDirection() const -> sf::Vector2f;
+	auto isPlayerApplyingForce() const -> bool; 
+
 protected:
 	virtual void draw(sf::RenderTarget &target, const sf::RenderStates &states) const override;
 
 private:
-	void emitParticle();
 
 	std::shared_ptr<PhysicsBody> m_body;
 	sf::RectangleShape m_shape;
 	GameLevel &m_gameLevel;
 
 	std::optional<GameLevel::PlanetCollisionInfo> m_collisionInfo;
-	sf::Texture *m_texture;
-	sf::SoundBuffer *m_sbResetLevel;
-	sf::SoundBuffer *m_sbPlanetCollide;
 	sf::Sound m_resetLevelSfx;
 	sf::Sound m_planetCollideSfx;
-
-	sf::VertexArray m_trailVertices;
-
-	std::size_t m_particleIndex{0};
-	sf::Uint32 m_emitCounter{0};
 };

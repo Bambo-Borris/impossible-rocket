@@ -39,7 +39,6 @@ PlayState::PlayState(sf::RenderWindow &window)
 
 void PlayState::update(const sf::Time &dt)
 {
-	// TODO: Reimplement skip through input handler
 	auto &input = InputHandler::get();
 	const bool skipLevel = input.debugSkipPressed();
 	static auto padType = input.getPadType();
@@ -120,12 +119,50 @@ void PlayState::update(const sf::Time &dt)
 			{
 				m_rocket.levelStart();
 				m_gameLevel.resetLevel();
-				m_particleEffects.erase(
-					std::remove(m_particleEffects.begin(),
-								m_particleEffects.end(),
-								(*result)));
 			}
 		}
+	}
+
+	// If the player is moving, lets add a particle effect for the exhaust
+	// once they stop we'll remove it. Really we should opt for never
+	// removing this effect, and only stop it.
+	// TODO: Don't remove this effect every time, add a pause mechanism for it
+	// instead
+	auto exhaustParticleEffect = std::find_if(m_particleEffects.begin(), m_particleEffects.end(), [](const auto &effect) -> bool
+											  { return effect->getEffectType() == ParticleEffect::Type::Rocket_Exhaust; });
+	if (m_rocket.isPlayerApplyingForce())
+	{
+		if (exhaustParticleEffect == m_particleEffects.end())
+		{
+			m_particleEffects.push_back(std::make_unique<ParticleEffect>(ParticleEffect::Type::Rocket_Exhaust, m_rocket.getExhaustPoint(), m_rocket.getExhaustDirection()));
+		}
+		else
+		{
+			// Update the effect position
+			(*exhaustParticleEffect)->setPosition(m_rocket.getExhaustPoint());
+			(*exhaustParticleEffect)->setNormal(m_rocket.getExhaustDirection());
+		}
+	}
+	else
+	{
+		if (exhaustParticleEffect != m_particleEffects.end())
+		{
+			if ((*exhaustParticleEffect)->isPlaying())
+				(*exhaustParticleEffect)->stop();
+		}
+	}
+
+	// Remove completed particle effects
+	if (!m_particleEffects.empty())
+	{
+		m_particleEffects.erase(
+			std::remove_if(m_particleEffects.begin(),
+						   m_particleEffects.end(),
+						   [](std::unique_ptr<ParticleEffect> &pe) -> bool
+						   {
+							   return !pe->isPlaying();
+						   }),
+			m_particleEffects.end());
 	}
 
 	// Roll over to next level
@@ -174,6 +211,7 @@ void PlayState::update(const sf::Time &dt)
 void PlayState::enter()
 {
 	m_rocket.levelStart();
+	// m_particleEffects.push_back(std::make_unique<ParticleEffect>(ParticleEffect::Type::Rocket_Exhaust, m_rocket.getPosition(), m_rocket.getExhaustDirection()));
 }
 
 void PlayState::draw() const
