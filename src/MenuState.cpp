@@ -19,7 +19,7 @@ MenuState::MenuState(sf::RenderWindow &window)
 
 	m_creditsText.setFont(*font);
 	m_creditsText.setCharacterSize(24);
-	m_creditsText.setString("Created by Bambo!");
+	m_creditsText.setString("Created by Bambo! (With help from Chris Thrasher)");
 
 	m_backgroundSprite.setSize(sf::Vector2f{m_window.getSize()});
 	m_backgroundSprite.setTexture(backgroundTex);

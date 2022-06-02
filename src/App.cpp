@@ -13,10 +13,11 @@
 constexpr auto WINDOW_TITLE{"Impossible Rocket - [indev]"};
 
 App::App()
-	: m_window(sf::VideoMode({800, 600}), WINDOW_TITLE, sf::Style::Default ^ sf::Style::Resize)
 {
+	sf::ContextSettings ctxt;
+	ctxt.antialiasingLevel = 16;
+	m_window.create(sf::VideoMode({800, 600}), WINDOW_TITLE, sf::Style::Default ^ sf::Style::Resize, ctxt);
 	spdlog::set_level(spdlog::level::debug);
-
 	m_window.setFramerateLimit(60);
 	m_window.setKeyRepeatEnabled(false);
 

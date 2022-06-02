@@ -20,15 +20,15 @@ public:
 	auto getCollisionInfo() const -> std::optional<GameLevel::PlanetCollisionInfo>;
 
 	auto getPosition() const -> sf::Vector2f;
-	auto getExhaustPoint() const -> sf::Vector2f; 
+	auto getExhaustPoint() const -> sf::Vector2f;
 	auto getExhaustDirection() const -> sf::Vector2f;
-	auto isPlayerApplyingForce() const -> bool; 
+	auto isPlayerApplyingForce() const -> bool;
+	auto getRotation() const -> sf::Angle;
 
 protected:
 	virtual void draw(sf::RenderTarget &target, const sf::RenderStates &states) const override;
 
 private:
-
 	std::shared_ptr<PhysicsBody> m_body;
 	sf::RectangleShape m_shape;
 	GameLevel &m_gameLevel;

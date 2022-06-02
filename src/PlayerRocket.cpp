@@ -125,6 +125,11 @@ auto PlayerRocket::isPlayerApplyingForce() const -> bool
 	return state.linear_thrust != 0.0f;
 }
 
+auto PlayerRocket::getRotation() const -> sf::Angle
+{
+	return m_shape.getRotation();
+}
+
 void PlayerRocket::draw(sf::RenderTarget &target, const sf::RenderStates &states) const
 {
 	target.draw(m_shape, states);
