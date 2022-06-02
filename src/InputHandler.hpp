@@ -18,14 +18,18 @@ public:
 	};
 
 	static InputHandler &get();
-	void handleEvents(sf::RenderWindow& window);
+	void handleEvents(sf::RenderWindow &window);
 
 	auto getInputState() const -> InputState;
 	auto wasResetPressed() const -> bool;
 	auto getPadType() const -> PadType;
 	auto debugSkipPressed() const -> bool;
-	auto getMousePosition() const -> sf::Vector2f; 
-	auto leftClickPressed() const -> bool; 
+	auto getMousePosition() const -> sf::Vector2f;
+	auto leftClickPressed() const -> bool;
+
+	// Completely halts all forces and velocity on the player rocket, entirely for debug
+	// purposes only.
+	auto wasHaltKeyPressed() const -> bool;
 
 private:
 	InputHandler() = default;
@@ -40,4 +44,5 @@ private:
 	bool m_resetPressed{false};
 	bool m_debugSkipPressed{false};
 	bool m_leftJustPressed{false};
+	bool m_haltKeyPressed{false};
 };

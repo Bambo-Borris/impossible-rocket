@@ -8,7 +8,7 @@ add_subdirectory(external)
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
     add_compile_options(-Werror -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    add_compile_options(/WX /W4 /permissive-)
+    add_compile_options(/W4 /permissive-)
 endif()
 
 add_executable(impossible-rocket
@@ -24,3 +24,7 @@ add_executable(impossible-rocket
     src/PlayerRocket.cpp
     src/PlayState.cpp)
 target_link_libraries(impossible-rocket PRIVATE SFML::Graphics SFML::Audio ImGui-SFML::ImGui-SFML spdlog)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(impossible-rocket PRIVATE IMPOSSIBLE_ROCKET_DEBUG)
+endif()

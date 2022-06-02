@@ -31,9 +31,12 @@ InputHandler &InputHandler::get()
 
 void InputHandler::handleEvents(sf::RenderWindow &window)
 {
+	// Maybe this could be improved upon to make
+	// adding things like this less painful...
 	m_resetPressed = false;
 	m_debugSkipPressed = false;
 	m_leftJustPressed = false;
+	m_haltKeyPressed = false;
 
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -103,6 +106,11 @@ auto InputHandler::leftClickPressed() const -> bool
 	return m_leftJustPressed;
 }
 
+auto InputHandler::wasHaltKeyPressed() const -> bool
+{
+	return m_haltKeyPressed;
+}
+
 void InputHandler::handleKeyboard(const sf::Event &event)
 {
 	if (event.type == sf::Event::KeyPressed)
@@ -127,6 +135,9 @@ void InputHandler::handleKeyboard(const sf::Event &event)
 
 		if (event.key.code == sf::Keyboard::N)
 			m_debugSkipPressed = true;
+
+		if (event.key.code == sf::Keyboard::H)
+			m_haltKeyPressed = true;
 
 		if (event.key.code == sf::Keyboard::F3)
 		{
