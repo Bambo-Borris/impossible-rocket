@@ -11,19 +11,28 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/W4 /permissive-)
 endif()
 
-add_executable(impossible-rocket
-    src/Main.cpp
-    src/App.cpp
-    src/AssetHolder.cpp
-    src/BaseState.cpp
-    src/GameLevel.cpp
-    src/InputHandler.cpp
-    src/MenuState.cpp
-    src/ParticleEffect.cpp
-    src/PhysicsWorld.cpp
-    src/PlayerRocket.cpp
-    src/PlayState.cpp)
-target_link_libraries(impossible-rocket PRIVATE SFML::Graphics SFML::Audio ImGui-SFML::ImGui-SFML spdlog)
+set(SOURCE_LIST
+                src/Main.cpp
+                src/App.cpp
+                src/AssetHolder.cpp
+                src/BaseState.cpp
+                src/GameLevel.cpp
+                src/InputHandler.cpp
+                src/MenuState.cpp
+                src/ParticleEffect.cpp
+                src/PhysicsWorld.cpp
+                src/PlayerRocket.cpp
+                src/PlayState.cpp)
+
+set(DEPS_LIST SFML::Graphics SFML::Audio ImGui-SFML::ImGui-SFML spdlog) 
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC" AND CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_executable(impossible-rocket WIN32 ${SOURCE_LIST})
+    target_link_libraries(impossible-rocket PRIVATE ${DEPS_LIST} SFML::Main)
+else()
+    add_executable(impossible-rocket ${SOURCE_LIST})
+    target_link_libraries(impossible-rocket PRIVATE ${DEPS_LIST})
+endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(impossible-rocket PRIVATE IMPOSSIBLE_ROCKET_DEBUG)

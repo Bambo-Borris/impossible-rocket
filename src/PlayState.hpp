@@ -20,11 +20,16 @@ public:
 	virtual void draw() const override;
 
 private:
+	void particleEffectUpdate(); 
+	void outOfBoundsUpdate();
+	
 	PhysicsWorld m_physicsWorld;
 	GameLevel m_gameLevel;
 	PlayerRocket m_rocket;
 
 	sf::RectangleShape m_backgroundSprite;
+	sf::RectangleShape m_oobDirectionIndicator; 
+
 	sf::Text m_uiPadType;
 	sf::Text m_uiAttempts;
 	sf::Text m_uiOOB;
