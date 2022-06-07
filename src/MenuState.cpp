@@ -53,6 +53,10 @@ void MenuState::enter()
 		sf::Vector2f(bb::MENU_ORBIT_RADIUS, m_orbitAngle));
 
 	m_animationRocket.setRotation(sf::degrees(90.0f));
+
+	auto music = AssetHolder::get().getMusic("bin/sounds/game_theme_music.mp3");
+	music->setLoop(true);
+	music->play();
 }
 
 void MenuState::update(const sf::Time &dt)
