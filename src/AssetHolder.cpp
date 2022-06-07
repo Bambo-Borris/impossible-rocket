@@ -52,3 +52,19 @@ sf::SoundBuffer *AssetHolder::getSoundBuffer(const std::filesystem::path &path)
 
 	return &m_soundBufferMap[pathString];
 }
+
+sf::Music *AssetHolder::getMusic(const std::filesystem::path &path)
+{
+	const auto pathString = path.string();
+	const auto result = m_musicMap.find(pathString);
+	if (result != m_musicMap.end())
+		return &(*result).second;
+
+	if (!std::filesystem::exists(path))
+		throw std::runtime_error(fmt::format("Music at path {} not found", pathString));
+
+	if (!m_musicMap[pathString].openFromFile(path))
+		throw std::runtime_error(fmt::format("Unable to load music {}", pathString));
+
+	return &m_musicMap[pathString];
+}
