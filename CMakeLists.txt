@@ -26,6 +26,10 @@ set(SOURCE_LIST
 
 set(DEPS_LIST SFML::Graphics SFML::Audio ImGui-SFML::ImGui-SFML spdlog) 
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+	set(SOURCE_LIST ${SOURCE_LIST} src/appicon.rc)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC" AND CMAKE_BUILD_TYPE STREQUAL "Release")
     add_executable(impossible-rocket WIN32 ${SOURCE_LIST})
     target_link_libraries(impossible-rocket PRIVATE ${DEPS_LIST} SFML::Main)
