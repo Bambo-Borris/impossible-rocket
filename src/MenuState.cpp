@@ -14,11 +14,12 @@ MenuState::MenuState(sf::RenderWindow &window)
 	m_playText.setString("PLAY");
 
 	m_titleText.setFont(*font);
-	m_titleText.setCharacterSize(48);
+	m_titleText.setCharacterSize(bb::TITLE_FONT_SIZE);
+	m_titleText.setStyle(sf::Text::Style::Bold);
 	m_titleText.setString("IMPOSSIBLE ROCKET!");
 
 	m_creditsText.setFont(*font);
-	m_creditsText.setCharacterSize(24);
+	m_creditsText.setCharacterSize(bb::BUTTON_FONT_SIZE);
 	m_creditsText.setString("Created by Bambo! (With help from Chris Thrasher)");
 
 	m_backgroundSprite.setSize(sf::Vector2f{m_window.getSize()});

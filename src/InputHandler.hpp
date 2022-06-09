@@ -26,6 +26,7 @@ public:
 	auto debugSkipPressed() const -> bool;
 	auto getMousePosition() const -> sf::Vector2f;
 	auto leftClickPressed() const -> bool;
+	auto pauseUnpausePressed() const -> bool;
 
 	// Completely halts all forces and velocity on the player rocket, entirely for debug
 	// purposes only.
@@ -45,4 +46,5 @@ private:
 	bool m_debugSkipPressed{false};
 	bool m_leftJustPressed{false};
 	bool m_haltKeyPressed{false};
+	bool m_pauseUnpausePressed{false};
 };

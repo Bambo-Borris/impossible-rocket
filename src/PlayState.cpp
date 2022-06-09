@@ -2,6 +2,7 @@
 #include "InputHandler.hpp"
 #include "AssetHolder.hpp"
 #include "SFUtility.hpp"
+#include "GameplayBlackboard.hpp"
 
 #include <string>
 #include <spdlog/spdlog.h>
@@ -17,17 +18,20 @@ PlayState::PlayState(sf::RenderWindow &window)
 	: BaseState(window),
 	  m_rocket(m_physicsWorld, m_gameLevel)
 {
+	// First we grab our asset pointers
 	auto const bgTexture{AssetHolder::get().getTexture("bin/textures/background_resized.png")};
 	auto const oobArrowTexture(AssetHolder::get().getTexture("bin/textures/oob_arrow.png"));
 	auto const font{AssetHolder::get().getFont("bin/fonts/VCR_OSD_MONO_1.001.ttf")};
+	auto const hoverSfx{AssetHolder::get().getSoundBuffer("bin/sounds/menu_hover.wav")};
 
 	m_gameLevel.loadLevel(GameLevel::Levels::One);
-
+	// Static background shape & texture setup
 	bgTexture->setRepeated(true);
 	m_backgroundSprite.setSize(sf::Vector2f(m_window.getSize()));
 	m_backgroundSprite.setTexture(bgTexture);
 	m_backgroundSprite.setTextureRect({{0, 0}, {600, 400}});
 
+	// In game UI
 	m_uiPadType.setFont(*font);
 	m_uiPadType.setString("Xbox");
 	const auto bounds = m_uiPadType.getGlobalBounds();
@@ -37,13 +41,123 @@ PlayState::PlayState(sf::RenderWindow &window)
 	m_uiAttempts.setString("Attempts: 1");
 
 	m_uiOOB.setFont(*font);
+	m_uiOOB.setFillColor(sf::Color::Yellow); // Make it catch the eye!
 
+	// Out of bounds arrow
 	m_oobDirectionIndicator.setSize({32.0f, 32.0f});
 	m_oobDirectionIndicator.setTexture(oobArrowTexture);
 	m_oobDirectionIndicator.setOrigin({16.0f, 16.0f});
+
+	// Pause menu dimmer shape
+	m_pauseMenuDim.setSize(sf::Vector2f{m_window.getSize()});
+	m_pauseMenuDim.setFillColor({90, 90, 90, 100});
+
+	m_uiPauseTitle.setFont(*font);
+	m_uiPauseTitle.setString("Paused");
+	m_uiPauseTitle.setCharacterSize(bb::TITLE_FONT_SIZE);
+	m_uiPauseTitle.setStyle(sf::Text::Style::Bold);
+	CentreTextOrigin(m_uiPauseTitle);
+	m_uiPauseTitle.setPosition({static_cast<float>(m_window.getSize().x) / 2.0f,
+								(m_uiPauseTitle.getGlobalBounds().height / 2.0f) + 150.0f});
+
+	// Pause UI buttons
+	m_uiResumeButton.setFont(*font);
+	m_uiResumeButton.setString("Resume");
+	m_uiResumeButton.setCharacterSize(bb::BUTTON_FONT_SIZE);
+	CentreTextOrigin(m_uiResumeButton);
+	m_uiResumeButton.setPosition(m_uiPauseTitle.getPosition() +
+								 sf::Vector2f{0.0f, GetHalfBounds(m_uiPauseTitle.getGlobalBounds()).y + bb::BUTTON_SPACING});
+
+	m_uiOptionsButton.setFont(*font);
+	m_uiOptionsButton.setString("Options");
+	m_uiOptionsButton.setCharacterSize(bb::BUTTON_FONT_SIZE);
+	CentreTextOrigin(m_uiOptionsButton);
+	m_uiOptionsButton.setPosition(m_uiResumeButton.getPosition() +
+								  sf::Vector2f{0.0f, GetHalfBounds(m_uiOptionsButton.getGlobalBounds()).y + bb::BUTTON_SPACING});
+
+	m_uiQuitButton.setFont(*font);
+	m_uiQuitButton.setString("Quit");
+	m_uiQuitButton.setCharacterSize(bb::BUTTON_FONT_SIZE);
+	CentreTextOrigin(m_uiQuitButton);
+	m_uiQuitButton.setPosition(m_uiOptionsButton.getPosition() +
+							   sf::Vector2f{0.0f, GetHalfBounds(m_uiQuitButton.getGlobalBounds()).y + bb::BUTTON_SPACING});
+
+	m_pauseButtonHoverSfx.setBuffer(*hoverSfx);
 }
 
 void PlayState::update(const sf::Time &dt)
+{
+	if (InputHandler::get().pauseUnpausePressed())
+	{
+		switch (m_status)
+		{
+		case PlayState::Status::Playing:
+			m_status = PlayState::Status::Paused;
+			break;
+		case PlayState::Status::Paused:
+			m_status = PlayState::Status::Playing;
+			break;
+		default:
+			// Do nothing I guess
+			break;
+		}
+	}
+
+	switch (m_status)
+	{
+	case PlayState::Status::Playing:
+		updatePlaying(dt);
+		break;
+	case PlayState::Status::Paused:
+		updatePaused(dt);
+		break;
+	case PlayState::Status::End_Of_Level:
+		updateEndOfLevel(dt);
+		break;
+	default:
+		assert(false);
+		break;
+	}
+}
+
+void PlayState::enter()
+{
+	m_rocket.levelStart();
+}
+
+void PlayState::draw() const
+{
+	// Gameplay oriented
+	m_window.draw(m_backgroundSprite);
+	m_window.draw(m_gameLevel);
+	if (m_isOutOfBounds)
+	{
+		m_window.draw(m_oobDirectionIndicator);
+	}
+	m_window.draw(m_rocket);
+	for (const auto &pe : m_particleEffects)
+	{
+		m_window.draw(*pe);
+	}
+
+	m_window.draw(m_uiPadType);
+	m_window.draw(m_uiAttempts);
+	if (m_isOutOfBounds)
+	{
+		m_window.draw(m_uiOOB);
+	}
+
+	if (m_status == PlayState::Status::Paused)
+	{
+		m_window.draw(m_pauseMenuDim);
+		m_window.draw(m_uiPauseTitle);
+		m_window.draw(m_uiResumeButton);
+		m_window.draw(m_uiOptionsButton);
+		m_window.draw(m_uiQuitButton);
+	}
+}
+
+void PlayState::updatePlaying(const sf::Time &dt)
 {
 	auto &input = InputHandler::get();
 	const bool skipLevel = input.debugSkipPressed();
@@ -112,31 +226,82 @@ void PlayState::update(const sf::Time &dt)
 	}
 }
 
-void PlayState::enter()
+void PlayState::updatePaused(const sf::Time &dt)
 {
-	m_rocket.levelStart();
+	(void)dt;
+	auto &ih = InputHandler::get();
+	const auto mousePos = ih.getMousePosition();
+
+	static sf::Int32 lastHovered = -1;
+	const bool hoveredResume = m_uiResumeButton.getGlobalBounds().contains(mousePos);
+	const bool hoveredOptions = m_uiOptionsButton.getGlobalBounds().contains(mousePos);
+	const bool hoveredQuit = m_uiQuitButton.getGlobalBounds().contains(mousePos);
+
+	if (hoveredResume)
+	{
+		m_uiResumeButton.setFillColor(sf::Color::Yellow);
+		if (m_pauseButtonHoverSfx.getStatus() != sf::Sound::Status::Playing && lastHovered != 0)
+		{
+			m_pauseButtonHoverSfx.play();
+			lastHovered = 0;
+		}
+
+		if (ih.leftClickPressed())
+		{
+			m_status = PlayState::Status::Playing;
+		}
+	}
+	else
+	{
+		m_uiResumeButton.setFillColor(sf::Color::White);
+	}
+
+	if (hoveredOptions)
+	{
+		m_uiOptionsButton.setFillColor(sf::Color::Yellow);
+		if (m_pauseButtonHoverSfx.getStatus() != sf::Sound::Status::Playing && lastHovered != 1)
+		{
+			m_pauseButtonHoverSfx.play();
+			lastHovered = 1;
+		}
+
+		if (ih.leftClickPressed())
+		{
+		}
+	}
+	else
+	{
+		m_uiOptionsButton.setFillColor(sf::Color::White);
+	}
+
+	if (hoveredQuit)
+	{
+		m_uiQuitButton.setFillColor(sf::Color::Yellow);
+		if (m_pauseButtonHoverSfx.getStatus() != sf::Sound::Status::Playing && lastHovered != 2)
+		{
+			m_pauseButtonHoverSfx.play();
+			lastHovered = 2;
+		}
+
+		if (ih.leftClickPressed())
+		{
+			m_window.close();
+		}
+	}
+	else
+	{
+		m_uiQuitButton.setFillColor(sf::Color::White);
+	}
+
+	if (!hoveredResume && !hoveredOptions && !hoveredQuit)
+	{
+		lastHovered = -1;
+	}
 }
 
-void PlayState::draw() const
+void PlayState::updateEndOfLevel(const sf::Time &dt)
 {
-	m_window.draw(m_backgroundSprite);
-	m_window.draw(m_gameLevel);
-	if (m_isOutOfBounds)
-	{
-		m_window.draw(m_oobDirectionIndicator);
-	}
-	m_window.draw(m_rocket);
-	for (const auto &pe : m_particleEffects)
-	{
-		m_window.draw(*pe);
-	}
-
-	m_window.draw(m_uiPadType);
-	m_window.draw(m_uiAttempts);
-	if (m_isOutOfBounds)
-	{
-		m_window.draw(m_uiOOB);
-	}
+	(void)dt;
 }
 
 void PlayState::particleEffectUpdate()

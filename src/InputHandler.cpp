@@ -37,14 +37,16 @@ void InputHandler::handleEvents(sf::RenderWindow &window)
 	m_debugSkipPressed = false;
 	m_leftJustPressed = false;
 	m_haltKeyPressed = false;
+	m_pauseUnpausePressed = false;
 
 	sf::Event event;
 	while (window.pollEvent(event))
 	{
 		ImGui::SFML::ProcessEvent(window, event);
+#if defined(IMPOSSIBLE_ROCKET_DEBUG)
 		if (event.type == sf::Event::Closed)
 			window.close();
-
+#endif
 		if (event.type == sf::Event::KeyPressed)
 			if (event.key.code == sf::Keyboard::Key::Escape)
 				window.close();
@@ -106,6 +108,11 @@ auto InputHandler::leftClickPressed() const -> bool
 	return m_leftJustPressed;
 }
 
+auto InputHandler::pauseUnpausePressed() const -> bool
+{
+	return m_pauseUnpausePressed;
+}
+
 auto InputHandler::wasHaltKeyPressed() const -> bool
 {
 	return m_haltKeyPressed;
@@ -132,6 +139,14 @@ void InputHandler::handleKeyboard(const sf::Event &event)
 	{
 		if (event.key.code == sf::Keyboard::Key::R)
 			m_resetPressed = true;
+
+#if defined(IMPOSSIBLE_ROCKET_DEBUG)
+		if (event.key.code == sf::Keyboard::P)
+			m_pauseUnpausePressed = true;
+#else
+		if (event.key.code == sf::Keyboard::P || sf::Keyboard::Escape)
+			m_pauseUnpausePressed = true;
+#endif
 
 		if (event.key.code == sf::Keyboard::N)
 			m_debugSkipPressed = true;
