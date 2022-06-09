@@ -32,11 +32,6 @@ PlayState::PlayState(sf::RenderWindow &window)
 	m_backgroundSprite.setTextureRect({{0, 0}, {600, 400}});
 
 	// In game UI
-	m_uiPadType.setFont(*font);
-	m_uiPadType.setString("Xbox");
-	const auto bounds = m_uiPadType.getGlobalBounds();
-	m_uiPadType.setPosition({800.0f - bounds.width, 0.0f});
-
 	m_uiAttempts.setFont(*font);
 	m_uiAttempts.setString("Attempts: 1");
 
@@ -140,7 +135,6 @@ void PlayState::draw() const
 		m_window.draw(*pe);
 	}
 
-	m_window.draw(m_uiPadType);
 	m_window.draw(m_uiAttempts);
 	if (m_isOutOfBounds)
 	{
@@ -161,7 +155,6 @@ void PlayState::updatePlaying(const sf::Time &dt)
 {
 	auto &input = InputHandler::get();
 	const bool skipLevel = input.debugSkipPressed();
-	static auto padType = input.getPadType();
 	static sf::Uint32 attempts = m_gameLevel.getAttemptTotal();
 
 	// Update core gameplay & ImGui
@@ -197,26 +190,6 @@ void PlayState::updatePlaying(const sf::Time &dt)
 			m_gameLevel.loadLevel(static_cast<GameLevel::Levels>(current + 1));
 			m_rocket.levelStart();
 		}
-	}
-
-	// Update pad type UI
-	if (input.getPadType() != padType)
-	{
-		padType = input.getPadType();
-		switch (padType)
-		{
-		case InputHandler::PadType::Xbox_Pad:
-			m_uiPadType.setString("Xbox");
-			break;
-
-		case InputHandler::PadType::DS4_Pad:
-			m_uiPadType.setString("DS4");
-			break;
-		default:
-			break;
-		}
-		const auto bounds = m_uiPadType.getGlobalBounds();
-		m_uiPadType.setPosition({800 - bounds.width, 0.0f});
 	}
 
 	if (attempts != m_gameLevel.getAttemptTotal())

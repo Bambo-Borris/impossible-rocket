@@ -22,7 +22,6 @@ public:
 
 	auto getInputState() const -> InputState;
 	auto wasResetPressed() const -> bool;
-	auto getPadType() const -> PadType;
 	auto debugSkipPressed() const -> bool;
 	auto getMousePosition() const -> sf::Vector2f;
 	auto leftClickPressed() const -> bool;

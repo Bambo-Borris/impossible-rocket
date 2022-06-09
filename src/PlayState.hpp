@@ -41,7 +41,6 @@ private:
 	sf::RectangleShape m_oobDirectionIndicator;
 	sf::RectangleShape m_pauseMenuDim;
 
-	sf::Text m_uiPadType;
 	sf::Text m_uiAttempts;
 	sf::Text m_uiOOB;
 	sf::Text m_uiPauseTitle;
