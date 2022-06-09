@@ -43,6 +43,20 @@ void InputHandler::handleEvents(sf::RenderWindow &window)
 	while (window.pollEvent(event))
 	{
 		ImGui::SFML::ProcessEvent(window, event);
+
+		if (sf::Joystick::isConnected(0))
+		{
+			auto id = sf::Joystick::getIdentification(0);
+			if (id.vendorId == 1118)
+			{
+				m_padType = PadType::Xbox_Pad;
+			}
+			else if (id.vendorId == 1356)
+			{
+				m_padType = PadType::DS4_Pad;
+			}
+		}
+
 #if defined(IMPOSSIBLE_ROCKET_DEBUG)
 		if (event.type == sf::Event::Closed)
 			window.close();
@@ -86,11 +100,6 @@ auto InputHandler::getInputState() const -> InputState
 auto InputHandler::wasResetPressed() const -> bool
 {
 	return m_resetPressed;
-}
-
-auto InputHandler::getPadType() const -> PadType
-{
-	return m_padType;
 }
 
 auto InputHandler::debugSkipPressed() const -> bool
@@ -153,22 +162,6 @@ void InputHandler::handleKeyboard(const sf::Event &event)
 
 		if (event.key.code == sf::Keyboard::H)
 			m_haltKeyPressed = true;
-
-		if (event.key.code == sf::Keyboard::F3)
-		{
-			switch (m_padType)
-			{
-			case PadType::Xbox_Pad:
-				m_padType = PadType::DS4_Pad;
-				break;
-			case PadType::DS4_Pad:
-				m_padType = PadType::Xbox_Pad;
-				break;
-			default:
-				assert(false);
-				break;
-			}
-		}
 
 		if (event.key.code == sf::Keyboard::Key::W)
 			m_state.linear_thrust = 0.0f;
