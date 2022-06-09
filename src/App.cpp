@@ -21,6 +21,12 @@ App::App()
 	m_window.setFramerateLimit(60);
 	m_window.setKeyRepeatEnabled(false);
 
+	sf::Image icon;
+	if (!icon.loadFromFile("bin/appicon.png"))
+		throw std::runtime_error("Unable to load application icon");
+
+	m_window.setIcon(icon.getSize(), icon.getPixelsPtr());
+
 	// Sigleton creation;
 	InputHandler::get();
 	AssetHolder::get();
