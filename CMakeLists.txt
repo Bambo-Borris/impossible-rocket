@@ -31,6 +31,7 @@ target_sources(impossible-rocket PRIVATE
     src/InputHandler.cpp
     src/MenuState.cpp
     src/ParticleEffect.cpp
+    src/PauseMenu.cpp
     src/PhysicsWorld.cpp
     src/PlayerRocket.cpp
     src/PlayState.cpp)
