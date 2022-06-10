@@ -57,10 +57,8 @@ void InputHandler::handleEvents(sf::RenderWindow &window)
 			}
 		}
 
-#if defined(IMPOSSIBLE_ROCKET_DEBUG)
 		if (event.type == sf::Event::Closed)
 			window.close();
-#endif
 		if (event.type == sf::Event::KeyPressed)
 			if (event.key.code == sf::Keyboard::Key::Escape)
 				window.close();
