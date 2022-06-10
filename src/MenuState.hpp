@@ -2,27 +2,26 @@
 
 #include "BaseState.hpp"
 
-#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
 
-class MenuState : public BaseState
-{
+class MenuState : public BaseState {
 public:
-	MenuState(sf::RenderWindow &window);
+    MenuState(sf::RenderWindow& window);
 
-	virtual void enter() override;
-	virtual void update(const sf::Time &dt) override;
-	virtual void draw() const override;
+    virtual void enter() override;
+    virtual void update(const sf::Time& dt) override;
+    virtual void draw() const override;
 
 private:
-	sf::Text m_playText;
-	sf::Text m_titleText;
-	sf::Text m_creditsText; 
-	sf::RectangleShape m_backgroundSprite;
+    sf::Text m_playText;
+    sf::Text m_titleText;
+    sf::Text m_creditsText;
+    sf::RectangleShape m_backgroundSprite;
 
-	sf::CircleShape m_animationPlanet;
-	sf::RectangleShape m_animationRocket; 
-	sf::Angle m_orbitAngle;
+    sf::CircleShape m_animationPlanet;
+    sf::RectangleShape m_animationRocket;
+    sf::Angle m_orbitAngle;
 };

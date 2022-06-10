@@ -4,20 +4,19 @@
 
 #include "BaseState.hpp"
 
-#include <stack>
 #include <memory>
+#include <stack>
 
-class App
-{
+class App {
 public:
-	App();
-	~App();
+    App();
+    ~App();
 
-	void run();
+    void run();
 
 private:
-	void logFPS(const sf::Time &dt);
+    void logFPS(const sf::Time& dt);
 
-	sf::RenderWindow m_window;
-	std::stack<std::unique_ptr<BaseState>> m_states;
+    sf::RenderWindow m_window;
+    std::stack<std::unique_ptr<BaseState>> m_states;
 };
