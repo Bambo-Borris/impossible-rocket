@@ -153,7 +153,7 @@ void InputHandler::handleKeyboard(const sf::Event &event)
 		if (event.key.code == sf::Keyboard::P)
 			m_pauseUnpausePressed = true;
 #else
-		if (event.key.code == sf::Keyboard::P || sf::Keyboard::Escape)
+		if (event.key.code == sf::Keyboard::P || event.key.code == sf::Keyboard::Escape)
 			m_pauseUnpausePressed = true;
 #endif
 
