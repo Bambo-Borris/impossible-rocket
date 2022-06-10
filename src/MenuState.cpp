@@ -69,6 +69,9 @@ void MenuState::update(const sf::Time& dt)
     } else
         m_playText.setFillColor(sf::Color::White);
 
+    if (ih.joystickActionButtonPressed())
+        m_stateCompleted = true;
+
     const auto rotateDelta = sf::degrees(bb::MENU_ORBIT_SPEED * dt.asSeconds());
     auto rocketAngle = m_animationRocket.getRotation();
     rocketAngle += rotateDelta;
