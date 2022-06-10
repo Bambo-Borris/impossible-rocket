@@ -39,3 +39,5 @@ target_link_libraries(impossible-rocket PRIVATE SFML::Graphics SFML::Audio ImGui
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(impossible-rocket PRIVATE IMPOSSIBLE_ROCKET_DEBUG)
 endif()
+
+add_custom_target(run COMMAND impossible-rocket WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
