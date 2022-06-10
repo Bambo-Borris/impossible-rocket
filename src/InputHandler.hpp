@@ -20,7 +20,7 @@ public:
     auto getMousePosition() const -> sf::Vector2f;
     auto leftClickPressed() const -> bool;
     auto pauseUnpausePressed() const -> bool;
-
+    auto joystickActionButtonPressed() const -> bool;
     // Completely halts all forces and velocity on the player rocket, entirely for debug
     // purposes only.
     auto wasHaltKeyPressed() const -> bool;
@@ -40,4 +40,5 @@ private:
     bool m_leftJustPressed { false };
     bool m_haltKeyPressed { false };
     bool m_pauseUnpausePressed { false };
+    bool m_joystickActionButtonPressed { false };
 };

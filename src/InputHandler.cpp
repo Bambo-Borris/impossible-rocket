@@ -96,6 +96,8 @@ auto InputHandler::pauseUnpausePressed() const -> bool { return m_pauseUnpausePr
 
 auto InputHandler::wasHaltKeyPressed() const -> bool { return m_haltKeyPressed; }
 
+auto InputHandler::joystickActionButtonPressed() const -> bool { return m_joystickActionButtonPressed; }
+
 void InputHandler::handleKeyboard(const sf::Event& event)
 {
     if (event.type == sf::Event::KeyPressed) {
@@ -146,16 +148,25 @@ void InputHandler::handleKeyboard(const sf::Event& event)
 
 void InputHandler::handleXbox(const sf::Event& event)
 {
-    const sf::Uint32 START_BUTTON_ID = 0;
+    constexpr sf::Uint32 START_BUTTON_ID = 7;
+    constexpr sf::Uint32 ACTION_BUTTON_ID = 0;
 
     // Button presses
-    if (event.type == sf::Event::JoystickButtonPressed)
+    if (event.type == sf::Event::JoystickButtonPressed) {
         if (event.joystickButton.button == START_BUTTON_ID)
             m_resetPressed = true;
 
-    if (event.type == sf::Event::JoystickButtonReleased)
+        if (event.joystickButton.button == ACTION_BUTTON_ID)
+            m_joystickActionButtonPressed = true;
+    }
+
+    if (event.type == sf::Event::JoystickButtonReleased) {
         if (event.joystickButton.button == START_BUTTON_ID)
             m_resetPressed = false;
+
+        if (event.joystickButton.button == ACTION_BUTTON_ID)
+            m_joystickActionButtonPressed = false;
+    }
 
     // Analogue inputs
     if (event.type == sf::Event::JoystickMoved) {
@@ -176,20 +187,26 @@ void InputHandler::handleXbox(const sf::Event& event)
 
 void InputHandler::handleDS4(const sf::Event& event)
 {
-    const sf::Uint32 START_BUTTON_ID = 9;
+    constexpr sf::Uint32 START_BUTTON_ID = 9;
+    constexpr sf::Uint32 ACTION_BUTTON_ID = 1;
 
     // Button presses
-    if (event.type == sf::Event::JoystickButtonPressed)
+    if (event.type == sf::Event::JoystickButtonPressed) {
         if (event.joystickButton.button == START_BUTTON_ID)
             m_resetPressed = true;
+        if (event.joystickButton.button == ACTION_BUTTON_ID)
+            m_joystickActionButtonPressed = true;
+    }
 
-    if (event.type == sf::Event::JoystickButtonReleased)
+    if (event.type == sf::Event::JoystickButtonReleased) {
         if (event.joystickButton.button == START_BUTTON_ID)
             m_resetPressed = false;
+        if (event.joystickButton.button == ACTION_BUTTON_ID)
+            m_joystickActionButtonPressed = false;
+    }
 
     // Analogue inputs
     if (event.type == sf::Event::JoystickMoved) {
-
         // Left Joystick
         if (event.joystickMove.axis == sf::Joystick::X)
             m_state.angular_thrust = get_normalized_axis_value(event.joystickMove.position);
