@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/System/Vector2.hpp>
+
 namespace bb {
 // Rocket related
 constexpr auto THRUST_FORCE { 2.0e7f };
