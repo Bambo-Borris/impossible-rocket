@@ -21,4 +21,5 @@ constexpr auto MENU_ORBIT_SPEED { 50.0f };
 constexpr auto TITLE_FONT_SIZE { 48u };
 constexpr auto BUTTON_FONT_SIZE { 24u };
 constexpr auto BUTTON_SPACING { 50.0f };
+constexpr auto VOLUME_BUTTON_SPACING { 10.0f };
 }
