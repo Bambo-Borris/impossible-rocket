@@ -143,7 +143,12 @@ void PlayState::updatePlaying(const sf::Time& dt)
     }
 }
 
-void PlayState::updatePaused(const sf::Time& dt) { m_pauseMenu.update(dt); }
+void PlayState::updatePaused(const sf::Time& dt)
+{
+    m_pauseMenu.update(dt);
+    if (m_pauseMenu.returnToPlaying())
+        m_status = PlayState::Status::Playing;
+}
 
 void PlayState::updateEndOfLevel(const sf::Time& dt) { (void)dt; }
 
