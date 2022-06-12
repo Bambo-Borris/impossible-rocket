@@ -16,8 +16,8 @@ constexpr auto FIXED_TIME_STEP = sf::seconds(1.0f / 120.0f);
 
 PlayState::PlayState(sf::RenderWindow& window)
     : BaseState(window)
-    , m_rocket(m_physicsWorld, m_gameLevel)
-    , m_pauseMenu(m_window)
+    , m_rocket(m_physicsWorld, m_gameLevel, m_soundCentral)
+    , m_pauseMenu(m_window, m_soundCentral)
 {
     // First we grab our asset pointers
     auto const bgTexture { AssetHolder::get().getTexture("bin/textures/background_resized.png") };

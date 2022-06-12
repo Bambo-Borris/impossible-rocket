@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseState.hpp"
+#include "SoundCentral.hpp"
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Font.hpp>
@@ -24,4 +25,7 @@ private:
     sf::CircleShape m_animationPlanet;
     sf::RectangleShape m_animationRocket;
     sf::Angle m_orbitAngle;
+
+    SoundCentral m_soundCentral;
+    
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SoundCentral.hpp"
+
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -10,7 +12,7 @@
 
 class PauseMenu : public sf::Drawable {
 public:
-    PauseMenu(sf::RenderWindow& window);
+    PauseMenu(sf::RenderWindow& window, SoundCentral& soundCentral);
 
     void update(const sf::Time& dt);
     void reset();
@@ -33,19 +35,19 @@ private:
     bool updateHoveredStatus(sf::Text& text);
 
     sf::RenderWindow& m_window;
+
     sf::Text m_uiPauseTitle;
     sf::Text m_uiResumeButton;
     sf::Text m_uiOptionsButton;
     sf::Text m_uiQuitButton;
-
     sf::Text m_uiMasterVolumeTitle;
     sf::Text m_uiMasterVolumeIndicator;
 
     sf::CircleShape m_uiUpVolume;
     sf::CircleShape m_uiDownVolume;
-
     sf::RectangleShape m_pauseMenuDim;
-    sf::Sound m_pauseButtonHoverSfx;
+
+    SoundCentral* m_soundCentral;
     SubMenuStage m_stage;
     bool m_returnToPlaying { false };
     sf::Shape* m_lastHoveredShape { nullptr };
