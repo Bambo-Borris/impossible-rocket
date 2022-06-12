@@ -33,8 +33,21 @@ void SoundCentral::playMusic(MusicTypes type)
     m_musicStreams[ToSizeT(type)]->play();
 }
 
+void SoundCentral::setMasterVolume(float volume)
+{
+    m_masterVolume = volume;
+
+    for (auto& s : m_soundEffects)
+        s.setVolume(m_masterVolume);
+
+    for (auto& m : m_musicStreams)
+        m->setVolume(m_masterVolume);
+}
+
 auto SoundCentral::getSoundStatus(SoundEffectTypes type) const -> sf::Sound::Status
 {
     assert(type < SoundEffectTypes::MAX_SFX);
     return m_soundEffects[ToSizeT(type)].getStatus();
 }
+
+auto SoundCentral::getMasterVolume() const -> float { return m_masterVolume; }

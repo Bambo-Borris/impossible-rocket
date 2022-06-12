@@ -33,6 +33,7 @@ private:
     void updateOptions(const sf::Time& dt);
     bool updateHoveredStatus(sf::Shape& shape);
     bool updateHoveredStatus(sf::Text& text);
+    void updateVolumeUIPositions();
 
     sf::RenderWindow& m_window;
 
