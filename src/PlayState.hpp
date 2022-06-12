@@ -6,6 +6,7 @@
 #include "PauseMenu.hpp"
 #include "PhysicsWorld.hpp"
 #include "PlayerRocket.hpp"
+#include "SoundCentral.hpp"
 
 #include <memory>
 
@@ -27,6 +28,7 @@ private:
     void particleEffectUpdate();
     void outOfBoundsUpdate();
 
+    SoundCentral m_soundCentral;
     PhysicsWorld m_physicsWorld;
     GameLevel m_gameLevel;
     PlayerRocket m_rocket;

@@ -34,7 +34,8 @@ target_sources(impossible-rocket PRIVATE
     src/PauseMenu.cpp
     src/PhysicsWorld.cpp
     src/PlayerRocket.cpp
-    src/PlayState.cpp)
+    src/PlayState.cpp
+    src/SoundCentral.cpp)
 target_link_libraries(impossible-rocket PRIVATE SFML::Graphics SFML::Audio ImGui-SFML::ImGui-SFML spdlog)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

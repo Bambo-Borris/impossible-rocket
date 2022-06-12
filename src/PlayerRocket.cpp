@@ -8,9 +8,10 @@
 #include <imgui-SFML.h>
 #include <imgui.h>
 
-PlayerRocket::PlayerRocket(PhysicsWorld& world, GameLevel& levelGeometry)
+PlayerRocket::PlayerRocket(PhysicsWorld& world, GameLevel& levelGeometry, SoundCentral& soundCentral)
     : m_body(world.addBody())
     , m_gameLevel(levelGeometry)
+    , m_soundCentral(&soundCentral)
 {
     m_shape.setOrigin(bb::ROCKET_SIZE * 0.5f);
     m_body->inertia = 1.0e3f;
@@ -18,11 +19,11 @@ PlayerRocket::PlayerRocket(PhysicsWorld& world, GameLevel& levelGeometry)
     m_body->transformable = &m_shape;
 
     auto texture { AssetHolder::get().getTexture("bin/textures/ship.png") };
-    auto sbLevelReset { AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav") };
-    auto sbCollide { AssetHolder::get().getSoundBuffer("bin/sounds/planet_collide.wav") };
+    // auto sbLevelReset { AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav") };
+    // auto sbCollide { AssetHolder::get().getSoundBuffer("bin/sounds/planet_collide.wav") };
 
-    m_resetLevelSfx.setBuffer(*sbLevelReset);
-    m_planetCollideSfx.setBuffer(*sbCollide);
+    // m_resetLevelSfx.setBuffer(*sbLevelReset);
+    // m_planetCollideSfx.setBuffer(*sbCollide);
 
     m_shape.setTexture(texture);
     m_shape.setSize(sf::Vector2f { texture->getSize() });
@@ -46,8 +47,9 @@ void PlayerRocket::update(const sf::Time& dt)
     if (result) {
         m_body->isActive = false;
         m_collisionInfo = result;
-        if (m_planetCollideSfx.getStatus() != sf::Sound::Status::Playing)
-            m_planetCollideSfx.play();
+        if (m_soundCentral->getSoundStatus(SoundCentral::SoundEffectTypes::PlanetCollision)
+            != sf::Sound::Status::Playing)
+            m_soundCentral->playSoundEffect(SoundCentral::SoundEffectTypes::PlanetCollision);
     }
 
     m_gameLevel.handleObjectiveIntersections(m_shape.getPosition(), bb::ROCKET_SIZE.x / 2.0f);
@@ -84,7 +86,7 @@ void PlayerRocket::levelStart()
     m_body->torque = 0.0f;
     m_body->isActive = true;
 
-    m_resetLevelSfx.play();
+    m_soundCentral->playSoundEffect(SoundCentral::SoundEffectTypes::LevelStart);
 }
 
 auto PlayerRocket::isInBounds(const sf::RenderWindow& window) const -> bool

@@ -7,10 +7,11 @@
 
 #include "GameLevel.hpp"
 #include "PhysicsWorld.hpp"
+#include "SoundCentral.hpp"
 
 class PlayerRocket : public sf::Drawable {
 public:
-    PlayerRocket(PhysicsWorld& world, GameLevel& levelGeometry);
+    PlayerRocket(PhysicsWorld& world, GameLevel& levelGeometry, SoundCentral& soundCentral);
     void update(const sf::Time& dt);
 
     void levelStart();
@@ -33,6 +34,5 @@ private:
     GameLevel& m_gameLevel;
 
     std::optional<GameLevel::PlanetCollisionInfo> m_collisionInfo;
-    sf::Sound m_resetLevelSfx;
-    sf::Sound m_planetCollideSfx;
+    SoundCentral* m_soundCentral;
 };

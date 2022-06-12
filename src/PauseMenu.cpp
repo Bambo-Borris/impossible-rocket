@@ -6,19 +6,16 @@
 
 #include <cassert>
 
-PauseMenu::PauseMenu(sf::RenderWindow& window)
+PauseMenu::PauseMenu(sf::RenderWindow& window, SoundCentral& soundCentral)
     : m_window(window)
+    , m_soundCentral(&soundCentral)
 {
-    auto const hoverSfx { AssetHolder::get().getSoundBuffer("bin/sounds/menu_hover.wav") };
     setupUIText();
     // Pause menu dimmer shape
     m_pauseMenuDim.setSize(sf::Vector2f { m_window.getSize() });
     m_pauseMenuDim.setFillColor({ 90, 90, 90, 100 });
 
-    m_pauseButtonHoverSfx.setBuffer(*hoverSfx);
-
     const auto volumeButtonRadius = static_cast<float>(m_uiMasterVolumeIndicator.getGlobalBounds().height) / 2.0f;
-
     m_uiUpVolume.setPointCount(3);
     m_uiUpVolume.setRadius(volumeButtonRadius);
     m_uiUpVolume.setOrigin({ volumeButtonRadius, volumeButtonRadius });
@@ -162,8 +159,9 @@ bool PauseMenu::updateHoveredStatus(sf::Shape& shape)
     const auto containsResult = shape.getGlobalBounds().contains(mousePosition);
 
     if (containsResult) {
-        if (m_pauseButtonHoverSfx.getStatus() != sf::Sound::Status::Playing && m_lastHoveredShape != &shape) {
-            m_pauseButtonHoverSfx.play();
+        if (m_soundCentral->getSoundStatus(SoundCentral::SoundEffectTypes::MenuItemHover) != sf::Sound::Status::Playing
+            && m_lastHoveredShape != &shape) {
+            m_soundCentral->playSoundEffect(SoundCentral::SoundEffectTypes::MenuItemHover);
             m_lastHoveredShape = &shape;
         }
         shape.setFillColor(sf::Color::Yellow);
@@ -178,8 +176,9 @@ bool PauseMenu::updateHoveredStatus(sf::Text& text)
     const auto mousePosition = InputHandler::get().getMousePosition();
     const auto containsResult = text.getGlobalBounds().contains(mousePosition);
     if (containsResult) {
-        if (m_pauseButtonHoverSfx.getStatus() != sf::Sound::Status::Playing && m_lastHoveredText != &text) {
-            m_pauseButtonHoverSfx.play();
+        if (m_soundCentral->getSoundStatus(SoundCentral::SoundEffectTypes::MenuItemHover) != sf::Sound::Status::Playing
+            && m_lastHoveredText != &text) {
+            m_soundCentral->playSoundEffect(SoundCentral::SoundEffectTypes::MenuItemHover);
             m_lastHoveredText = &text;
         }
         text.setFillColor(sf::Color::Yellow);
