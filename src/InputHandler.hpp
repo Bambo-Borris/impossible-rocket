@@ -21,6 +21,7 @@ public:
     auto leftClickPressed() const -> bool;
     auto pauseUnpausePressed() const -> bool;
     auto joystickActionButtonPressed() const -> bool;
+    auto leftClickHeld() const -> bool;
     // Completely halts all forces and velocity on the player rocket, entirely for debug
     // purposes only.
     auto wasHaltKeyPressed() const -> bool;
@@ -28,7 +29,7 @@ public:
 private:
     InputHandler() = default;
 
-    void handleKeyboard(const sf::Event& event);
+    void handleKeyboardAndMouse(const sf::Event& event, sf::RenderWindow& window);
     void handleXbox(const sf::Event& event);
     void handleDS4(const sf::Event& event);
 
@@ -41,4 +42,5 @@ private:
     bool m_haltKeyPressed { false };
     bool m_pauseUnpausePressed { false };
     bool m_joystickActionButtonPressed { false };
+    bool m_leftClickHeld { false };
 };

@@ -57,16 +57,7 @@ void InputHandler::handleEvents(sf::RenderWindow& window)
             if (event.key.code == sf::Keyboard::Key::Escape)
                 window.close();
 
-        if (event.type == sf::Event::MouseMoved) {
-            const sf::Vector2i pos { event.mouseMove.x, event.mouseMove.y };
-            m_mousePosition = window.mapPixelToCoords(pos);
-        }
-
-        if (event.type == sf::Event::MouseButtonReleased)
-            if (event.mouseButton.button == sf::Mouse::Left)
-                m_leftJustPressed = true;
-
-        handleKeyboard(event);
+        handleKeyboardAndMouse(event, window);
         switch (m_padType) {
         case PadType::Xbox_Pad:
             handleXbox(event);
@@ -94,11 +85,13 @@ auto InputHandler::leftClickPressed() const -> bool { return m_leftJustPressed; 
 
 auto InputHandler::pauseUnpausePressed() const -> bool { return m_pauseUnpausePressed; }
 
+auto InputHandler::leftClickHeld() const -> bool { return m_leftClickHeld; }
+
 auto InputHandler::wasHaltKeyPressed() const -> bool { return m_haltKeyPressed; }
 
 auto InputHandler::joystickActionButtonPressed() const -> bool { return m_joystickActionButtonPressed; }
 
-void InputHandler::handleKeyboard(const sf::Event& event)
+void InputHandler::handleKeyboardAndMouse(const sf::Event& event, sf::RenderWindow& window)
 {
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Key::W)
@@ -143,6 +136,24 @@ void InputHandler::handleKeyboard(const sf::Event& event)
 
         if (event.key.code == sf::Keyboard::Key::D)
             m_state.angular_thrust = 0.0f;
+    }
+
+    if (event.type == sf::Event::MouseMoved) {
+        const sf::Vector2i pos { event.mouseMove.x, event.mouseMove.y };
+        m_mousePosition = window.mapPixelToCoords(pos);
+    }
+
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            m_leftClickHeld = true;
+        }
+    }
+
+    if (event.type == sf::Event::MouseButtonReleased) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            m_leftJustPressed = true;
+            m_leftClickHeld = false;
+        }
     }
 }
 

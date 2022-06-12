@@ -5,6 +5,7 @@
 #include "SFUtility.hpp"
 
 #include <cassert>
+#include <spdlog/fmt/fmt.h>
 
 PauseMenu::PauseMenu(sf::RenderWindow& window, SoundCentral& soundCentral)
     : m_window(window)
@@ -145,12 +146,20 @@ void PauseMenu::updateDefault(const sf::Time& dt)
 void PauseMenu::updateOptions(const sf::Time& dt)
 {
     (void)dt;
+    auto masterVol = static_cast<sf::Uint32>(m_soundCentral->getMasterVolume());
+
     if (updateHoveredStatus(m_uiUpVolume)) {
-        // TODO implement master volume change herer
+        if (InputHandler::get().leftClickHeld() && masterVol < 100)
+            masterVol += 1;
     }
+
     if (updateHoveredStatus(m_uiDownVolume)) {
-        // TODO implement master volume change herer
+        if (InputHandler::get().leftClickHeld() && masterVol > 0)
+            masterVol -= 1;
     }
+
+    m_soundCentral->setMasterVolume(static_cast<float>(masterVol));
+    updateVolumeUIPositions();
 }
 
 bool PauseMenu::updateHoveredStatus(sf::Shape& shape)
@@ -186,4 +195,22 @@ bool PauseMenu::updateHoveredStatus(sf::Text& text)
         text.setFillColor(sf::Color::White);
 
     return containsResult;
+}
+
+void PauseMenu::updateVolumeUIPositions()
+{
+    const auto volumeButtonRadius = m_uiUpVolume.getRadius();
+    const auto masterVolume = m_soundCentral->getMasterVolume();
+
+    m_uiMasterVolumeIndicator.setString(fmt::format("{}%", masterVolume));
+    CentreTextOrigin(m_uiMasterVolumeIndicator);
+    m_uiMasterVolumeIndicator.setPosition(getSpacedLocation(m_uiMasterVolumeTitle));
+
+    const auto size = m_uiMasterVolumeIndicator.getGlobalBounds().getSize();
+    m_uiUpVolume.setPosition(m_uiMasterVolumeIndicator.getPosition()
+                             + sf::Vector2f { (size.x / 2.0f) + volumeButtonRadius + bb::VOLUME_BUTTON_SPACING, 0.0f });
+
+    m_uiDownVolume.setPosition(
+        m_uiMasterVolumeIndicator.getPosition()
+        - sf::Vector2f { (size.x / 2.0f) + volumeButtonRadius + bb::VOLUME_BUTTON_SPACING, 0.0f });
 }
