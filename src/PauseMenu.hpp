@@ -43,6 +43,7 @@ private:
     sf::Text m_uiQuitButton;
     sf::Text m_uiMasterVolumeTitle;
     sf::Text m_uiMasterVolumeIndicator;
+    sf::Text m_uiBackToDefaultSubMenu;
 
     sf::CircleShape m_uiUpVolume;
     sf::CircleShape m_uiDownVolume;

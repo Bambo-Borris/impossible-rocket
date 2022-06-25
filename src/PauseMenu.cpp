@@ -73,6 +73,7 @@ void PauseMenu::draw(sf::RenderTarget& target, const sf::RenderStates& states) c
         target.draw(m_uiMasterVolumeIndicator, states);
         target.draw(m_uiUpVolume, states);
         target.draw(m_uiDownVolume, states);
+        target.draw(m_uiBackToDefaultSubMenu, states);
         break;
     default:
         assert(false);
@@ -104,6 +105,9 @@ void PauseMenu::setupUIText()
 
     setupTextProperty(m_uiMasterVolumeIndicator, font, "100%", bb::BUTTON_FONT_SIZE);
     m_uiMasterVolumeIndicator.setPosition(getSpacedLocation(m_uiMasterVolumeTitle));
+
+    setupTextProperty(m_uiBackToDefaultSubMenu, font, "Back", bb::BUTTON_FONT_SIZE);
+    m_uiBackToDefaultSubMenu.setPosition(getSpacedLocation(m_uiMasterVolumeIndicator));
 }
 
 void PauseMenu::setupTextProperty(sf::Text& text,
@@ -156,6 +160,11 @@ void PauseMenu::updateOptions(const sf::Time& dt)
     if (updateHoveredStatus(m_uiDownVolume)) {
         if (InputHandler::get().leftClickHeld() && masterVol > 0)
             masterVol -= 1;
+    }
+
+    if (updateHoveredStatus(m_uiBackToDefaultSubMenu)) {
+        if (InputHandler::get().leftClickPressed())
+            m_stage = SubMenuStage::Default;
     }
 
     m_soundCentral->setMasterVolume(static_cast<float>(masterVol));

@@ -53,9 +53,6 @@ void InputHandler::handleEvents(sf::RenderWindow& window)
 
         if (event.type == sf::Event::Closed)
             window.close();
-        if (event.type == sf::Event::KeyPressed)
-            if (event.key.code == sf::Keyboard::Key::Escape)
-                window.close();
 
         handleKeyboardAndMouse(event, window);
         switch (m_padType) {
@@ -114,6 +111,8 @@ void InputHandler::handleKeyboardAndMouse(const sf::Event& event, sf::RenderWind
 #if defined(IMPOSSIBLE_ROCKET_DEBUG)
         if (event.key.code == sf::Keyboard::P)
             m_pauseUnpausePressed = true;
+        if (event.key.code == sf::Keyboard::Key::Escape)
+            window.close();
 #else
         if (event.key.code == sf::Keyboard::P || event.key.code == sf::Keyboard::Escape)
             m_pauseUnpausePressed = true;
