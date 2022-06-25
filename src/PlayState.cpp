@@ -84,14 +84,40 @@ void PlayState::draw() const
     // Gameplay oriented
     m_window.draw(m_backgroundSprite);
     m_window.draw(m_gameLevel);
+    
+    // We want certain particle effects to render
+    // over the player, and others to render under
+    // so we'll create a sf::Drawalbe queue
+    // and sort the player &  particle effects
+    std::vector<const sf::Drawable*> drawableQueue;
+
+    for (auto& pe : m_particleEffects) {
+        if (pe->getEffectType() == ParticleEffect::Type::Rocket_Exhaust)
+            drawableQueue.push_back(pe.get());
+    }
+
+    const auto findResult
+        = std::find_if(m_particleEffects.begin(), m_particleEffects.end(), [](const auto& pe) -> bool {
+              return pe->getEffectType() == ParticleEffect::Type::Rocket_Exhaust;
+          });
+
+    if (findResult != m_particleEffects.end())
+        drawableQueue.push_back(findResult->get());
+
+    drawableQueue.push_back(&m_rocket);
+    if (findResult != m_particleEffects.end()) {
+        for (const auto& pe : m_particleEffects) {
+            if (pe->getEffectType() != ParticleEffect::Type::Rocket_Exhaust)
+                drawableQueue.push_back(pe.get());
+        }
+    }
+
+    for (auto& drawable : drawableQueue)
+        m_window.draw(*drawable);
+
     if (m_isOutOfBounds) {
         m_window.draw(m_oobDirectionIndicator);
     }
-    m_window.draw(m_rocket);
-    for (const auto& pe : m_particleEffects) {
-        m_window.draw(*pe);
-    }
-
     m_window.draw(m_uiAttempts);
     if (m_isOutOfBounds) {
         m_window.draw(m_uiOOB);
