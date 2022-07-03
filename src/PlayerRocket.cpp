@@ -108,8 +108,8 @@ auto PlayerRocket::getExhaustPoint() const -> sf::Vector2f
 auto PlayerRocket::getExhaustDirection() const -> sf::Vector2f
 {
     const auto angle = m_shape.getRotation();
-    const auto thrust
-        = InputHandler::get().getInputState().linear_thrust / std::abs(InputHandler::get().getInputState().linear_thrust);
+    const auto thrust = InputHandler::get().getInputState().linear_thrust
+        / std::abs(InputHandler::get().getInputState().linear_thrust);
     return { sf::Vector2f { 1.0f, angle } * -thrust };
 }
 

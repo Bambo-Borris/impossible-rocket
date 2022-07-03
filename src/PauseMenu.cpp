@@ -1,5 +1,6 @@
 #include "PauseMenu.hpp"
 #include "AssetHolder.hpp"
+#include "GameLevel.hpp"
 #include "GameplayBlackboard.hpp"
 #include "InputHandler.hpp"
 #include "SFUtility.hpp"
@@ -7,9 +8,14 @@
 #include <cassert>
 #include <spdlog/fmt/fmt.h>
 
-PauseMenu::PauseMenu(sf::RenderWindow& window, SoundCentral& soundCentral)
+constexpr auto DEFAULT_MENU_TITLE = "Paused";
+constexpr auto OPTIONS_MENU_TITLE = "Options";
+constexpr auto LEVELSUMMARY_MENU_TITLE = "Level Complete!";
+
+PauseMenu::PauseMenu(sf::RenderWindow& window, SoundCentral& soundCentral, GameLevel& level)
     : m_window(window)
     , m_soundCentral(&soundCentral)
+    , m_level(&level)
 {
     setupUIText();
     // Pause menu dimmer shape
@@ -45,21 +51,46 @@ void PauseMenu::update(const sf::Time& dt)
     case PauseMenu::SubMenuStage::Options:
         updateOptions(dt);
         break;
+    case PauseMenu::SubMenuStage::LevelSummary:
+        updateLevelSummary();
+        break;
     }
 }
 
 auto PauseMenu::returnToPlaying() const -> bool { return m_returnToPlaying; }
 
+void PauseMenu::setSubMenuStage(PauseMenu::SubMenuStage stage)
+{
+    m_stage = stage;
+    switch (stage) {
+    case SubMenuStage::Default:
+        m_uiMenuTitle.setString(DEFAULT_MENU_TITLE);
+        break;
+    case SubMenuStage::Options:
+        m_uiMenuTitle.setString(OPTIONS_MENU_TITLE);
+        break;
+    case SubMenuStage::LevelSummary:
+        m_uiMenuTitle.setString(LEVELSUMMARY_MENU_TITLE);
+        break;
+    default:
+        assert(false);
+        break;
+    }
+    CentreTextOrigin(m_uiMenuTitle);
+}
+
+auto PauseMenu::getStage() const -> PauseMenu::SubMenuStage { return m_stage; }
+
 void PauseMenu::reset()
 {
     m_returnToPlaying = false;
-    m_stage = SubMenuStage::Default;
+    setSubMenuStage(SubMenuStage::Default);
 }
 
 void PauseMenu::draw(sf::RenderTarget& target, const sf::RenderStates& states) const
 {
     target.draw(m_pauseMenuDim, states);
-    target.draw(m_uiPauseTitle, states);
+    target.draw(m_uiMenuTitle, states);
 
     switch (m_stage) {
     case PauseMenu::SubMenuStage::Default:
@@ -69,11 +100,16 @@ void PauseMenu::draw(sf::RenderTarget& target, const sf::RenderStates& states) c
         target.draw(m_uiQuitButton, states);
         break;
     case PauseMenu::SubMenuStage::Options:
+        target.draw(m_uiMenuTitle, states);
         target.draw(m_uiMasterVolumeTitle, states);
         target.draw(m_uiMasterVolumeIndicator, states);
         target.draw(m_uiUpVolume, states);
         target.draw(m_uiDownVolume, states);
         target.draw(m_uiBackToDefaultSubMenu, states);
+        break;
+    case PauseMenu::SubMenuStage::LevelSummary:
+        target.draw(m_uiAttemptsIndicator, states);
+        target.draw(m_uiContinueLevelButton, states);
         break;
     default:
         assert(false);
@@ -85,14 +121,14 @@ void PauseMenu::setupUIText()
 {
     auto const font { AssetHolder::get().getFont("bin/fonts/VCR_OSD_MONO_1.001.ttf") };
 
-    setupTextProperty(m_uiPauseTitle, font, "Paused", bb::TITLE_FONT_SIZE);
-    m_uiPauseTitle.setStyle(sf::Text::Style::Bold);
-    m_uiPauseTitle.setPosition(
-        { static_cast<float>(m_window.getSize().x) / 2.0f, (m_uiPauseTitle.getGlobalBounds().height / 2.0f) + 150.0f });
+    setupTextProperty(m_uiMenuTitle, font, DEFAULT_MENU_TITLE, bb::TITLE_FONT_SIZE);
+    m_uiMenuTitle.setStyle(sf::Text::Style::Bold);
+    m_uiMenuTitle.setPosition(
+        { static_cast<float>(m_window.getSize().x) / 2.0f, (m_uiMenuTitle.getGlobalBounds().height / 2.0f) + 150.0f });
 
-    // Pause UI buttons
+    // Default Submenu
     setupTextProperty(m_uiResumeButton, font, "Resume", bb::BUTTON_FONT_SIZE);
-    m_uiResumeButton.setPosition(getSpacedLocation(m_uiPauseTitle));
+    m_uiResumeButton.setPosition(getSpacedLocation(m_uiMenuTitle));
 
     setupTextProperty(m_uiOptionsButton, font, "Options", bb::BUTTON_FONT_SIZE);
     m_uiOptionsButton.setPosition(getSpacedLocation(m_uiResumeButton));
@@ -100,14 +136,22 @@ void PauseMenu::setupUIText()
     setupTextProperty(m_uiQuitButton, font, "Quit", bb::BUTTON_FONT_SIZE);
     m_uiQuitButton.setPosition(getSpacedLocation(m_uiOptionsButton));
 
+    // Options
     setupTextProperty(m_uiMasterVolumeTitle, font, "Master Volume", bb::BUTTON_FONT_SIZE);
-    m_uiMasterVolumeTitle.setPosition(getSpacedLocation(m_uiPauseTitle));
+    m_uiMasterVolumeTitle.setPosition(getSpacedLocation(m_uiMenuTitle));
 
     setupTextProperty(m_uiMasterVolumeIndicator, font, "100%", bb::BUTTON_FONT_SIZE);
     m_uiMasterVolumeIndicator.setPosition(getSpacedLocation(m_uiMasterVolumeTitle));
 
     setupTextProperty(m_uiBackToDefaultSubMenu, font, "Back", bb::BUTTON_FONT_SIZE);
     m_uiBackToDefaultSubMenu.setPosition(getSpacedLocation(m_uiMasterVolumeIndicator));
+
+    // Level Summary
+    setupTextProperty(m_uiAttemptsIndicator, font, "Attempts : ", bb::BUTTON_FONT_SIZE);
+    m_uiAttemptsIndicator.setPosition(getSpacedLocation(m_uiMenuTitle));
+
+    setupTextProperty(m_uiContinueLevelButton, font, "Continue", bb::BUTTON_FONT_SIZE);
+    m_uiContinueLevelButton.setPosition(getSpacedLocation(m_uiAttemptsIndicator));
 }
 
 void PauseMenu::setupTextProperty(sf::Text& text,
@@ -137,7 +181,7 @@ void PauseMenu::updateDefault(const sf::Time& dt)
             m_returnToPlaying = true;
     } else if (updateHoveredStatus(m_uiOptionsButton)) {
         if (ih.leftClickPressed())
-            m_stage = PauseMenu::SubMenuStage::Options;
+            setSubMenuStage(SubMenuStage::Options);
     } else if (updateHoveredStatus(m_uiQuitButton)) {
         if (ih.leftClickPressed())
             m_window.close();
@@ -169,6 +213,16 @@ void PauseMenu::updateOptions(const sf::Time& dt)
 
     m_soundCentral->setMasterVolume(static_cast<float>(masterVol));
     updateVolumeUIPositions();
+}
+
+void PauseMenu::updateLevelSummary()
+{
+    m_uiAttemptsIndicator.setString(fmt::format("Attempts : {}", m_level->getAttemptTotal()));
+    if (updateHoveredStatus(m_uiContinueLevelButton)) {
+        if (InputHandler::get().leftClickPressed()) {
+            m_returnToPlaying = true;
+        }
+    }
 }
 
 bool PauseMenu::updateHoveredStatus(sf::Shape& shape)

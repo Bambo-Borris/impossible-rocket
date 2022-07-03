@@ -20,11 +20,10 @@ public:
     virtual void draw() const override;
 
 private:
-    enum class Status { Playing, Paused, End_Of_Level };
+    enum class Status { Playing, Paused };
 
     void updatePlaying(const sf::Time& dt);
     void updatePaused(const sf::Time& dt);
-    void updateEndOfLevel(const sf::Time& dt);
     void particleEffectUpdate();
     void outOfBoundsUpdate();
 
@@ -36,7 +35,6 @@ private:
 
     sf::RectangleShape m_backgroundSprite;
     sf::RectangleShape m_oobDirectionIndicator;
-    sf::Text m_uiAttempts;
     sf::Text m_uiOOB;
     sf::Clock m_oobTimer; // out of bounds timer
 
