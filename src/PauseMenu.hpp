@@ -10,48 +10,65 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Time.hpp>
 
+class GameLevel;
+
 class PauseMenu : public sf::Drawable {
 public:
-    PauseMenu(sf::RenderWindow& window, SoundCentral& soundCentral);
+    enum class SubMenuStage { Default = 0, Options, LevelSummary };
+
+    PauseMenu(sf::RenderWindow& window, SoundCentral& soundCentral, GameLevel& level);
 
     void update(const sf::Time& dt);
     void reset();
 
     auto returnToPlaying() const -> bool;
 
+    void setSubMenuStage(SubMenuStage stage);
+    auto getStage() const -> SubMenuStage;
+
 protected:
     virtual void draw(sf::RenderTarget& target, const sf::RenderStates& states) const override;
 
 private:
-    enum class SubMenuStage { Default = 0, Options };
-
     void setupUIText();
     void setupTextProperty(sf::Text& text, sf::Font* font, const sf::String& initString, sf::Uint32 charSize) const;
     sf::Vector2f getSpacedLocation(const sf::Text& previousNode) const;
 
     void updateDefault(const sf::Time& dt);
     void updateOptions(const sf::Time& dt);
+    void updateLevelSummary();
     bool updateHoveredStatus(sf::Shape& shape);
     bool updateHoveredStatus(sf::Text& text);
     void updateVolumeUIPositions();
 
     sf::RenderWindow& m_window;
 
-    sf::Text m_uiPauseTitle;
+    sf::RectangleShape m_pauseMenuDim;
+
+    sf::Text m_uiMenuTitle;
+
+    // Default submenu
     sf::Text m_uiResumeButton;
     sf::Text m_uiOptionsButton;
     sf::Text m_uiQuitButton;
-    sf::Text m_uiMasterVolumeTitle;
-    sf::Text m_uiMasterVolumeIndicator;
-    sf::Text m_uiBackToDefaultSubMenu;
 
+    // Options submenu
+    sf::Text m_uiMasterVolumeTitle;
+    sf::Text m_uiBackToDefaultSubMenu;
+    sf::Text m_uiMasterVolumeIndicator;
+    
     sf::CircleShape m_uiUpVolume;
     sf::CircleShape m_uiDownVolume;
-    sf::RectangleShape m_pauseMenuDim;
+    
+    // LevelSummary submenu
+    sf::Text m_uiAttemptsIndicator;
+    sf::Text m_uiContinueLevelButton; 
 
     SoundCentral* m_soundCentral;
+    GameLevel* m_level;
     SubMenuStage m_stage;
-    bool m_returnToPlaying { false };
     sf::Shape* m_lastHoveredShape { nullptr };
     sf::Text* m_lastHoveredText { nullptr };
+    
+    bool m_returnToPlaying { false };
 };

@@ -17,7 +17,7 @@ constexpr auto FIXED_TIME_STEP = sf::seconds(1.0f / 120.0f);
 PlayState::PlayState(sf::RenderWindow& window)
     : BaseState(window)
     , m_rocket(m_physicsWorld, m_gameLevel, m_soundCentral)
-    , m_pauseMenu(m_window, m_soundCentral)
+    , m_pauseMenu(m_window, m_soundCentral, m_gameLevel)
 {
     // First we grab our asset pointers
     auto const bgTexture { AssetHolder::get().getTexture("bin/textures/background_resized.png") };
@@ -30,10 +30,6 @@ PlayState::PlayState(sf::RenderWindow& window)
     m_backgroundSprite.setSize(sf::Vector2f(m_window.getSize()));
     m_backgroundSprite.setTexture(bgTexture);
     m_backgroundSprite.setTextureRect({ { 0, 0 }, { 600, 400 } });
-
-    // In game UI
-    m_uiAttempts.setFont(*font);
-    m_uiAttempts.setString("Attempts: 1");
 
     m_uiOOB.setFont(*font);
     m_uiOOB.setFillColor(sf::Color::Yellow); // Make it catch the eye!
@@ -68,9 +64,6 @@ void PlayState::update(const sf::Time& dt)
     case PlayState::Status::Paused:
         updatePaused(dt);
         break;
-    case PlayState::Status::End_Of_Level:
-        updateEndOfLevel(dt);
-        break;
     default:
         assert(false);
         break;
@@ -84,7 +77,7 @@ void PlayState::draw() const
     // Gameplay oriented
     m_window.draw(m_backgroundSprite);
     m_window.draw(m_gameLevel);
-    
+
     // We want certain particle effects to render
     // over the player, and others to render under
     // so we'll create a sf::Drawalbe queue
@@ -118,7 +111,7 @@ void PlayState::draw() const
     if (m_isOutOfBounds) {
         m_window.draw(m_oobDirectionIndicator);
     }
-    m_window.draw(m_uiAttempts);
+
     if (m_isOutOfBounds) {
         m_window.draw(m_uiOOB);
     }
@@ -132,7 +125,6 @@ void PlayState::updatePlaying(const sf::Time& dt)
 {
     auto& input = InputHandler::get();
     const bool skipLevel = input.debugSkipPressed();
-    static sf::Uint32 attempts = m_gameLevel.getAttemptTotal();
 
     // Update core gameplay & ImGui
     m_physicsWorld.step(FIXED_TIME_STEP, dt);
@@ -153,30 +145,36 @@ void PlayState::updatePlaying(const sf::Time& dt)
 
     // Roll over to next level
     if (m_gameLevel.isLevelComplete() || skipLevel) {
-        const auto current = static_cast<sf::Uint32>(m_gameLevel.getCurrentLevel());
-        if (current + 1 >= static_cast<sf::Uint32>(GameLevel::Levels::MAX_LEVEL)) {
-            // Do game completion here.
-            spdlog::debug("All Levels Complete");
-        } else {
-            m_gameLevel.loadLevel(static_cast<GameLevel::Levels>(current + 1));
-            m_rocket.levelStart();
+        if (m_status == Status::Playing) {
+            m_pauseMenu.reset();
+            m_pauseMenu.setSubMenuStage(PauseMenu::SubMenuStage::LevelSummary);
+            m_status = Status::Paused;
         }
     }
 
-    if (attempts != m_gameLevel.getAttemptTotal()) {
-        attempts = m_gameLevel.getAttemptTotal();
-        m_uiAttempts.setString(fmt::format("Attempts: {}", attempts));
-    }
+    // if (attempts != m_gameLevel.getAttemptTotal()) {
+    //     attempts = m_gameLevel.getAttemptTotal();
+    //     m_uiAttempts.setString(fmt::format("Attempts: {}", attempts));
+    // }
 }
 
 void PlayState::updatePaused(const sf::Time& dt)
 {
     m_pauseMenu.update(dt);
-    if (m_pauseMenu.returnToPlaying())
+    if (m_pauseMenu.returnToPlaying()) {
+        if (m_pauseMenu.getStage() == PauseMenu::SubMenuStage::LevelSummary) {
+            const auto current = static_cast<sf::Uint32>(m_gameLevel.getCurrentLevel());
+            if (current + 1 >= static_cast<sf::Uint32>(GameLevel::Levels::MAX_LEVEL)) {
+                // Do game completion here.
+                spdlog::debug("All Levels Complete");
+            } else {
+                m_gameLevel.loadLevel(static_cast<GameLevel::Levels>(current + 1));
+                m_rocket.levelStart();
+            }
+        }
         m_status = PlayState::Status::Playing;
+    }
 }
-
-void PlayState::updateEndOfLevel(const sf::Time& dt) { (void)dt; }
 
 void PlayState::particleEffectUpdate()
 {
