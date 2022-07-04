@@ -19,12 +19,6 @@ PlayerRocket::PlayerRocket(PhysicsWorld& world, GameLevel& levelGeometry, SoundC
     m_body->transformable = &m_shape;
 
     auto texture { AssetHolder::get().getTexture("bin/textures/ship.png") };
-    // auto sbLevelReset { AssetHolder::get().getSoundBuffer("bin/sounds/level_reset.wav") };
-    // auto sbCollide { AssetHolder::get().getSoundBuffer("bin/sounds/planet_collide.wav") };
-
-    // m_resetLevelSfx.setBuffer(*sbLevelReset);
-    // m_planetCollideSfx.setBuffer(*sbCollide);
-
     m_shape.setTexture(texture);
     m_shape.setSize(sf::Vector2f { texture->getSize() });
 }

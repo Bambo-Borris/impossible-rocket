@@ -151,11 +151,6 @@ void PlayState::updatePlaying(const sf::Time& dt)
             m_status = Status::Paused;
         }
     }
-
-    // if (attempts != m_gameLevel.getAttemptTotal()) {
-    //     attempts = m_gameLevel.getAttemptTotal();
-    //     m_uiAttempts.setString(fmt::format("Attempts: {}", attempts));
-    // }
 }
 
 void PlayState::updatePaused(const sf::Time& dt)

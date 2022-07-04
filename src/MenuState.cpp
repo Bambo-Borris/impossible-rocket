@@ -53,9 +53,6 @@ void MenuState::enter()
 
     m_animationRocket.setRotation(sf::degrees(90.0f));
 
-    // auto music = AssetHolder::get().getMusic("bin/sounds/game_theme_music.mp3");
-    // music->setLoop(true);
-    // music->play();
     m_soundCentral.playMusic(SoundCentral::MusicTypes::MainGameTheme);
 }
 

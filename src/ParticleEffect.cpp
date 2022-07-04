@@ -89,8 +89,6 @@ ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f no
                                                         PLANET_COLLISION_PARTICLE_MAX_SPEED);
 
         for (std::size_t i = 0; i < PLANET_COLLISION_PARTICLE_COUNT; ++i) {
-            // m_vertices[i].position = position;
-            // m_vertices[i].color = PLANET_COLLISION_PARTICLE_COLOUR_START;
             const auto angle = sf::degrees(angleDist(m_randomEngine));
             m_particles[i].velocity = sf::Vector2f { speedDist(m_randomEngine), angle };
             m_particles[i].position = position;
