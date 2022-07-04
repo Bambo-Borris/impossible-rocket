@@ -98,11 +98,9 @@ void PlayState::draw() const
         drawableQueue.push_back(findResult->get());
 
     drawableQueue.push_back(&m_rocket);
-    if (findResult != m_particleEffects.end()) {
-        for (const auto& pe : m_particleEffects) {
-            if (pe->getEffectType() != ParticleEffect::Type::Rocket_Exhaust)
-                drawableQueue.push_back(pe.get());
-        }
+    for (const auto& pe : m_particleEffects) {
+        if (pe->getEffectType() != ParticleEffect::Type::Rocket_Exhaust)
+            drawableQueue.push_back(pe.get());
     }
 
     for (auto& drawable : drawableQueue)
