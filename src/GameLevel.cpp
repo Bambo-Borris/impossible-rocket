@@ -90,10 +90,13 @@ void GameLevel::loadLevel(Levels level)
             sf::Vector2f position;
 
             levelFile >> radius >> position.x >> position.y >> m_planets.back().mass;
-            m_planets.back().shape.setRadius(radius);
+            m_planets.back().shape.setSize({ radius * 2.f, radius * 2.f });
             m_planets.back().shape.setOrigin({ radius, radius });
             m_planets.back().shape.setPosition(position);
-            m_planets.back().shape.setFillColor(sf::Color::Green);
+            auto tex = AssetHolder::get().getTexture("bin/textures/planet.png");
+            tex->generateMipmap();
+            m_planets.back().shape.setTexture(tex);
+
         } else if (line[0] == 'o') // Load objectives
         {
             sf::Vector2f pos;
@@ -139,7 +142,8 @@ std::optional<GameLevel::PlanetCollisionInfo> GameLevel::doesCollideWithPlanet(c
                                                                                float radius) const
 {
     for (auto& p : m_planets) {
-        const auto result = circle_vs_circle(pos, radius, p.shape.getPosition(), p.shape.getRadius());
+        const auto result
+            = circle_vs_circle(pos, radius, p.shape.getPosition(), p.shape.getGlobalBounds().width / 2.0f);
         if (result)
             return result;
     }

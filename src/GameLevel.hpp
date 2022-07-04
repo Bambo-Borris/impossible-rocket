@@ -42,7 +42,7 @@ protected:
 
 private:
     struct Planet {
-        sf::CircleShape shape;
+        sf::RectangleShape shape;
         float mass { 0.0f };
     };
 
