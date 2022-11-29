@@ -157,7 +157,7 @@ void PauseMenu::setupUIText()
 void PauseMenu::setupTextProperty(sf::Text& text,
                                   sf::Font* font,
                                   const sf::String& initString,
-                                  sf::Uint32 charSize) const
+                                  std::uint32_t charSize) const
 {
     text.setFont(*font);
     text.setString(initString);
@@ -194,7 +194,7 @@ void PauseMenu::updateDefault(const sf::Time& dt)
 void PauseMenu::updateOptions(const sf::Time& dt)
 {
     (void)dt;
-    auto masterVol = static_cast<sf::Uint32>(m_soundCentral->getMasterVolume());
+    auto masterVol = static_cast<std::uint32_t>(m_soundCentral->getMasterVolume());
 
     if (updateHoveredStatus(m_uiUpVolume)) {
         if (InputHandler::get().leftClickHeld() && masterVol < 100)

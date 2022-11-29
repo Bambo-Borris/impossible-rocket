@@ -10,7 +10,7 @@ constexpr auto AXIS_DEADZONE_UPPER = 95.0f;
 
 float get_normalized_axis_value(float pos)
 {
-    float pos_abs = fabsf(pos);
+    float pos_abs = std::abs(pos);
     const float sign = pos_abs / pos;
     if (pos_abs > AXIS_DEADZONE_LOWER) {
         pos_abs = std::min(AXIS_DEADZONE_UPPER, pos_abs);
@@ -158,8 +158,8 @@ void InputHandler::handleKeyboardAndMouse(const sf::Event& event, sf::RenderWind
 
 void InputHandler::handleXbox(const sf::Event& event)
 {
-    constexpr sf::Uint32 START_BUTTON_ID = 7;
-    constexpr sf::Uint32 ACTION_BUTTON_ID = 0;
+    constexpr std::uint32_t START_BUTTON_ID = 7;
+    constexpr std::uint32_t ACTION_BUTTON_ID = 0;
 
     // Button presses
     if (event.type == sf::Event::JoystickButtonPressed) {
@@ -197,8 +197,8 @@ void InputHandler::handleXbox(const sf::Event& event)
 
 void InputHandler::handleDS4(const sf::Event& event)
 {
-    constexpr sf::Uint32 START_BUTTON_ID = 9;
-    constexpr sf::Uint32 ACTION_BUTTON_ID = 1;
+    constexpr std::uint32_t START_BUTTON_ID = 9;
+    constexpr std::uint32_t ACTION_BUTTON_ID = 1;
 
     // Button presses
     if (event.type == sf::Event::JoystickButtonPressed) {
@@ -224,7 +224,7 @@ void InputHandler::handleDS4(const sf::Event& event)
         // Left trigger
         if (event.joystickMove.axis == sf::Joystick::U) {
             if (event.joystickMove.position > -AXIS_DEADZONE_UPPER)
-                m_state.linear_thrust = -get_normalized_axis_value(fabsf(event.joystickMove.position));
+                m_state.linear_thrust = -get_normalized_axis_value(std::abs(event.joystickMove.position));
             else
                 m_state.linear_thrust = 0.0f;
         }
@@ -232,7 +232,7 @@ void InputHandler::handleDS4(const sf::Event& event)
         // Right trigger
         if (event.joystickMove.axis == sf::Joystick::V) {
             if (event.joystickMove.position > -AXIS_DEADZONE_UPPER)
-                m_state.linear_thrust = get_normalized_axis_value(fabsf(event.joystickMove.position));
+                m_state.linear_thrust = get_normalized_axis_value(std::abs(event.joystickMove.position));
             else
                 m_state.linear_thrust = 0.0f;
         }
