@@ -35,7 +35,7 @@ public:
 
     auto isLevelComplete() const -> bool;
     auto getCurrentLevel() const -> Levels;
-    auto getAttemptTotal() const -> sf::Uint32;
+    auto getAttemptTotal() const -> std::uint32_t;
 
 protected:
     virtual void draw(sf::RenderTarget& target, const sf::RenderStates& states) const override;
@@ -56,5 +56,5 @@ private:
     sf::Vector2f m_playerStart;
     sf::Sound m_collectObjective;
     Levels m_currentLevel = Levels::Developer;
-    sf::Uint32 m_levelAttempts { 1 };
+    std::uint32_t m_levelAttempts { 1 };
 };

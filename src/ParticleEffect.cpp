@@ -61,10 +61,10 @@ sf::Color lerp_colour(const sf::Color& start, const sf::Color& end, float t)
     const auto outputBlue = lerp(start_blue, end_blue, t);
     const auto outputAlpha = lerp(start_alpha, end_alpha, t);
 
-    return { static_cast<sf::Uint8>(outputRed * 255.0f),
-             static_cast<sf::Uint8>(outputGreen * 255.0f),
-             static_cast<sf::Uint8>(outputBlue * 255.0f),
-             static_cast<sf::Uint8>(outputAlpha * 255.0f) };
+    return { static_cast<std::uint8_t>(outputRed * 255.0f),
+             static_cast<std::uint8_t>(outputGreen * 255.0f),
+             static_cast<std::uint8_t>(outputBlue * 255.0f),
+             static_cast<std::uint8_t>(outputAlpha * 255.0f) };
 }
 
 ParticleEffect::ParticleEffect(Type type, sf::Vector2f position, sf::Vector2f normal)
@@ -142,11 +142,11 @@ void ParticleEffect::update(const sf::Time& dt)
         }
     } break;
     case Type::Rocket_Exhaust: {
-        sf::Uint32 emitCount = 0;
+        std::uint32_t emitCount = 0;
         m_emitTimer += dt;
         if (m_emitTimer >= ROCKET_EXHAUST_EMIT_FREQUENCY) {
             // m_emitTimer = sf::Time::Zero;
-            emitCount = static_cast<sf::Uint32>(m_emitTimer.asMilliseconds()
+            emitCount = static_cast<std::uint32_t>(m_emitTimer.asMilliseconds()
                                                 / ROCKET_EXHAUST_EMIT_FREQUENCY.asMilliseconds());
             m_emitTimer = m_emitTimer % ROCKET_EXHAUST_EMIT_FREQUENCY;
             // emitNewParticle = true;

@@ -156,8 +156,8 @@ void PlayState::updatePaused(const sf::Time& dt)
     m_pauseMenu.update(dt);
     if (m_pauseMenu.returnToPlaying()) {
         if (m_pauseMenu.getStage() == PauseMenu::SubMenuStage::LevelSummary) {
-            const auto current = static_cast<sf::Uint32>(m_gameLevel.getCurrentLevel());
-            if (current + 1 >= static_cast<sf::Uint32>(GameLevel::Levels::MAX_LEVEL)) {
+            const auto current = static_cast<std::uint32_t>(m_gameLevel.getCurrentLevel());
+            if (current + 1 >= static_cast<std::uint32_t>(GameLevel::Levels::MAX_LEVEL)) {
                 // Do game completion here.
                 spdlog::debug("All Levels Complete");
             } else {
@@ -241,7 +241,7 @@ void PlayState::outOfBoundsUpdate()
     // and reset the level once OOB for too long
     if (m_isOutOfBounds) {
         // Update our ui text
-        const auto seconds = static_cast<sf::Int32>(m_oobTimer.getElapsedTime().asSeconds());
+        const auto seconds = static_cast<std::int32_t>(m_oobTimer.getElapsedTime().asSeconds());
         auto remaining = std::max(MAX_OOB_TIME - seconds, 0);
         m_uiOOB.setString(fmt::format("Out of bounds!\nReset in.. {}", remaining));
         CentreTextOrigin(m_uiOOB);

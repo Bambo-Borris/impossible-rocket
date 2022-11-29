@@ -31,7 +31,7 @@ protected:
 
 private:
     void setupUIText();
-    void setupTextProperty(sf::Text& text, sf::Font* font, const sf::String& initString, sf::Uint32 charSize) const;
+    void setupTextProperty(sf::Text& text, sf::Font* font, const sf::String& initString, std::uint32_t charSize) const;
     sf::Vector2f getSpacedLocation(const sf::Text& previousNode) const;
 
     void updateDefault(const sf::Time& dt);

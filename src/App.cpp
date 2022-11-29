@@ -92,7 +92,7 @@ void App::logFPS(const sf::Time& dt)
         ++counter;
     } else {
         auto fps = 1.0f / (sum.asSeconds() / static_cast<float>(counter));
-        const auto newTitle = fmt::format("{} - FPS {}", WINDOW_TITLE, static_cast<sf::Uint32>(fps));
+        const auto newTitle = fmt::format("{} - FPS {}", WINDOW_TITLE, static_cast<std::uint32_t>(fps));
         m_window.setTitle(newTitle);
         sum = sf::Time::Zero;
         counter = 0;

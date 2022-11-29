@@ -94,7 +94,9 @@ void GameLevel::loadLevel(Levels level)
             m_planets.back().shape.setOrigin({ radius, radius });
             m_planets.back().shape.setPosition(position);
             auto tex = AssetHolder::get().getTexture("bin/textures/planet.png");
-            tex->generateMipmap();
+            if (!tex->generateMipmap())
+                throw std::runtime_error("Unable to generate mip maps");
+                
             m_planets.back().shape.setTexture(tex);
 
         } else if (line[0] == 'o') // Load objectives
@@ -185,7 +187,7 @@ auto GameLevel::isLevelComplete() const -> bool
 
 auto GameLevel::getCurrentLevel() const -> Levels { return m_currentLevel; }
 
-auto GameLevel::getAttemptTotal() const -> sf::Uint32 { return m_levelAttempts; }
+auto GameLevel::getAttemptTotal() const -> std::uint32_t { return m_levelAttempts; }
 
 void GameLevel::draw(sf::RenderTarget& target, const sf::RenderStates& states) const
 {
